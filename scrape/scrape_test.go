@@ -73,24 +73,29 @@ func Test_LiveCheck(t *testing.T) {
 
 	util.WriteString("mainPage", r, 0644)
 
-	result, link, err := Tag(r)
+	station, incident, err := Tag(r)
 	if err != nil {
 		t.FailNow()
 	}
 
 	util.WriteString("mainPage", r, 0644)
 
-	strip(result[0])
+	for i, _ := range station {
+		fmt.Printf("%v\n", strip(station[i]))
+		fmt.Printf("%v\n", strip(incident[i]))
+	}		
 
-	for i, l := range link {
+
+	for i, l := range incident {
 		util.WriteString(fmt.Sprintf("GetDetail%d", i), r, 0644)
 		r, err = Get(GetDetail(l))
 		if err != nil {
 			t.Fatalf("err: %s\n", err)
 		}
 
-		result, err = GetTable(r)
-		fmt.Printf("%v\n", result)
+		if status, err := GetTable(r); err == nil {
+			fmt.Printf("%v\n", status)
+		}
 
 	}
 

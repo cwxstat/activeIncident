@@ -105,12 +105,13 @@ type DB struct {
 	v []string
 }
 
+// Tag: returns station, incident, and error
 func Tag(s string) ([]string, []string, error) {
 	doc, err := html.Parse(strings.NewReader(s))
-	r := []string{}
-	l := []string{}
+	station := []string{}
+	incident := []string{}
 	if err != nil {
-		return r, l, err
+		return station, incident, err
 	}
 	var f func(*html.Node)
 	f = func(n *html.Node) {
@@ -120,9 +121,9 @@ func Tag(s string) ([]string, []string, error) {
 
 					if strings.Contains(a.Val, "Lookup") {
 						// fmt.Println(a.Val)
-						r = append(r, a.Val)
+						station = append(station, a.Val)
 					} else if strings.Contains(a.Val, "livecad") {
-						l = append(l, a.Val)
+						incident = append(incident, a.Val)
 					}
 
 					break
@@ -134,7 +135,7 @@ func Tag(s string) ([]string, []string, error) {
 		}
 	}
 	f(doc)
-	return r, l, err
+	return station, incident, err
 }
 
 func strip(s string) map[string]string {
@@ -155,6 +156,8 @@ func strip(s string) map[string]string {
 
 func cleanUp(s string) string {
 	s = strings.Replace(s, "livecadcomments-fireems.asp?eid", "eid", -1)
+	s = strings.Replace(s, "LookupFD.asp?FDStation", "FDStation", -1)
+	s = strings.Replace(s, "LookupEMS.asp?EMSStation", "EMSStation", -1)
 	s = strings.Replace(s, "livecadcomments.asp?eid", "eid", -1)
 	s = strings.Replace(s, "map.asp?type", "type", -1)
 	s = strings.Replace(s, "<br>", " ", -1)
@@ -254,16 +257,16 @@ func BuildDb() ([]map[string]string, [][]string, error) {
 		return nil, nil, err
 	}
 
-	result, link, err := Tag(r)
+	station, incident, err := Tag(r)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	for _, result := range result {
+	for _, result := range station {
 		callTable = append(callTable, strip(result))
 	}
 
-	for _, l := range link {
+	for _, l := range incident {
 		r, err = Get(GetDetail(l))
 		if err != nil {
 			return callTable, nil, err
