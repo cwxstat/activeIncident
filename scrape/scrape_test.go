@@ -83,8 +83,7 @@ func Test_LiveCheck(t *testing.T) {
 	for i, _ := range station {
 		fmt.Printf("%v\n", strip(station[i]))
 		fmt.Printf("%v\n", strip(incident[i]))
-	}		
-
+	}
 
 	for i, l := range incident {
 		util.WriteString(fmt.Sprintf("GetDetail%d", i), r, 0644)
