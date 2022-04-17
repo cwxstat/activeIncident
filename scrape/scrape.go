@@ -1,11 +1,7 @@
 package scrape
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
-	"os"
 	"time"
 
 	"context"
@@ -98,11 +94,6 @@ func Get(url string, client ...*http.Client) (string, error) {
 	}
 
 	return GetWithClient(url, newclient)
-}
-
-type DB struct {
-	r map[string]string
-	v []string
 }
 
 // Tag: returns station, incident, and error
@@ -246,122 +237,21 @@ func GetTableV2(s string) ([]string, error) {
 	return r, nil
 }
 
-func BuildDb() ([]map[string]string, [][]string, error) {
+// func WriteJson(filename string) error {
 
-	callTable := []map[string]string{}
-	arriveTable := [][]string{}
+// 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 
-	url := constants.WebCadURL + "livecad.asp?print=yes"
-	r, err := Get(url)
-	if err != nil {
-		return nil, nil, err
-	}
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer f.Close()
 
-	station, incident, err := Tag(r)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	for _, result := range station {
-		callTable = append(callTable, strip(result))
-	}
-
-	for _, l := range incident {
-		r, err = Get(GetDetail(l))
-		if err != nil {
-			return callTable, nil, err
-		}
-
-		arrive, err := GetTable(r)
-		if err != nil {
-			return callTable, nil, err
-		}
-		arriveTable = append(arriveTable, arrive)
-
-	}
-
-	return callTable, arriveTable, err
-
-}
-
-func Show() {
-	c, a, err := BuildDb()
-	if err != nil {
-		log.Fatalf("No build")
-	}
-	for i, m := range c {
-		for k, v := range m {
-			fmt.Printf("%v: %v\n", k, v)
-		}
-		fmt.Printf("Status: %v\n\n", a[i])
-	}
-}
-
-func ShowJson() {
-	a, err := GetJson()
-	if err != nil {
-		log.Printf("Error in json")
-	}
-	println(string(a))
-}
-
-func WriteJson(filename string) error {
-
-	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	a, err := GetJson()
-	if err != nil {
-		log.Printf("Error in json")
-	}
-	if _, err = f.WriteString(string(a)); err != nil {
-		return err
-	}
-	return nil
-}
-
-//TODO: Fix me
-func GetJson() ([]byte, error) {
-	c, a, err := BuildDb()
-	if err != nil {
-		log.Fatalf("No build")
-	}
-
-	return ToJson(c, a)
-
-}
-
-func ToJson(call []map[string]string, status [][]string) ([]byte, error) {
-	type Calls struct {
-		Call   map[string]string
-		Status []string
-	}
-
-	calls := []*Calls{}
-
-	if len(status) < len(call) {
-		log.Printf("len(status) < len(call)\n")
-		for i := len(status); i < len(call); i++ {
-			status = append(status, []string{})
-		}
-	}
-
-	for i, v := range call {
-		nt := new(Calls)
-		nt.Call = v
-		nt.Status = status[i]
-		calls = append(calls, nt)
-	}
-
-	type DB struct {
-		Calls     []*Calls
-		TimeStamp time.Time
-	}
-
-	return json.Marshal(DB{calls, time.Now()})
-
-}
+// 	a, err := GetJson()
+// 	if err != nil {
+// 		log.Printf("Error in json")
+// 	}
+// 	if _, err = f.WriteString(string(a)); err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
