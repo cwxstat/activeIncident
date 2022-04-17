@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"context"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -42,7 +43,11 @@ func Cookie(n string, v string) {
 
 // GetWithClient returns the HTML returned by the url using a provided HTTP client
 func GetWithClient(url string, client *http.Client) (string, error) {
-	req, err := http.NewRequest("GET", url, nil)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Millisecond*800))
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		if debug {
 			panic("Couldn't perform GET request to " + url)
