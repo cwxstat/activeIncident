@@ -3,6 +3,7 @@ package scrape
 import (
 	"errors"
 	"time"
+	"fmt"
 
 	"context"
 	"io/ioutil"
@@ -197,4 +198,37 @@ func GetTable(s string) ([]string, error) {
 	f(doc)
 
 	return r, nil
+}
+
+func GetsEverything() error {
+	url := constants.WebCadURL + "livecad.asp?print=yes"
+	r, err := Get(url)
+	if err != nil {
+		return err
+	}
+
+	station, incident, err := Tag(r)
+	if err != nil {
+		return err
+	}
+
+	for i, l := range incident {
+		r, err = Get(GetDetail(l))
+		if err != nil {
+			return err
+		}
+
+		if len(station) <= i {
+			fmt.Printf("station: %v, incident: %v\n", "none", strip(l))
+		} else {
+
+			fmt.Printf("station: %v, incident: %v\n", strip(station[i]), strip(l))
+		}
+
+		if status, err := GetTable(r); err == nil {
+			fmt.Printf("%v\n", status)
+		}
+
+	}
+	return nil
 }
