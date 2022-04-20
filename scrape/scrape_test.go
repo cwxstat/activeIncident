@@ -92,6 +92,13 @@ func Test_LiveCheck(t *testing.T) {
 			t.Fatalf("err: %s\n", err)
 		}
 
+		if len(station) <= i {
+			fmt.Printf("station: %v, incident: %v\n","none", strip(l))
+		} else {
+
+			fmt.Printf("station: %v, incident: %v\n",strip(station[i]), strip(l))
+		}
+
 		if status, err := GetTable(r); err == nil {
 			fmt.Printf("%v\n", status)
 		}
