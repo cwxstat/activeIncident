@@ -80,11 +80,6 @@ func Test_LiveCheck(t *testing.T) {
 
 	util.WriteString("mainPage", r, 0644)
 
-	for i, _ := range station {
-		fmt.Printf("%v\n", strip(station[i]))
-		fmt.Printf("%v\n", strip(incident[i]))
-	}
-
 	for i, l := range incident {
 		util.WriteString(fmt.Sprintf("GetDetail%d", i), r, 0644)
 		r, err = Get(GetDetail(l))
@@ -93,10 +88,10 @@ func Test_LiveCheck(t *testing.T) {
 		}
 
 		if len(station) <= i {
-			fmt.Printf("station: %v, incident: %v\n","none", strip(l))
+			fmt.Printf("station: %v, incident: %v\n", "none", strip(l))
 		} else {
 
-			fmt.Printf("station: %v, incident: %v\n",strip(station[i]), strip(l))
+			fmt.Printf("station: %v, incident: %v\n", strip(station[i]), strip(l))
 		}
 
 		if status, err := GetTable(r); err == nil {
