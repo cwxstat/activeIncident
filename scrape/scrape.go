@@ -2,13 +2,15 @@ package scrape
 
 import (
 	"errors"
-	"time"
 	"fmt"
+	"time"
 
 	"context"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"encoding/json"
+	"os"
 
 	"github.com/cwxstat/activeIncident/constants"
 	"golang.org/x/net/html"
@@ -200,7 +202,27 @@ func GetTable(s string) ([]string, error) {
 	return r, nil
 }
 
-func GetsEverything() error {
+type StationIncidentStatus struct {
+	Time     time.Time
+	Station  map[string]string
+	Incident map[string]string
+	Status   []string
+}
+
+type DB struct {
+	Time   time.Time
+	Events []StationIncidentStatus
+}
+
+func NewDB() *DB {
+	return &DB{
+		Time:   time.Now(),
+		Events: []StationIncidentStatus{},
+	}
+}
+
+func (db *DB) GetsEverything() error {
+
 	url := constants.WebCadURL + "livecad.asp?print=yes"
 	r, err := Get(url)
 	if err != nil {
@@ -213,22 +235,46 @@ func GetsEverything() error {
 	}
 
 	for i, l := range incident {
+		stationIncidentStatus := StationIncidentStatus{}
 		r, err = Get(GetDetail(l))
 		if err != nil {
 			return err
 		}
 
 		if len(station) <= i {
+
 			fmt.Printf("station: %v, incident: %v\n", "none", strip(l))
+			stationIncidentStatus.Time = time.Now()
+			stationIncidentStatus.Station = map[string]string{"none": "none"}
+			stationIncidentStatus.Incident = strip(l)
+
 		} else {
 
 			fmt.Printf("station: %v, incident: %v\n", strip(station[i]), strip(l))
+			stationIncidentStatus.Time = time.Now()
+			stationIncidentStatus.Station = strip(station[i])
+			stationIncidentStatus.Incident = strip(l)
 		}
 
 		if status, err := GetTable(r); err == nil {
 			fmt.Printf("%v\n", status)
+			stationIncidentStatus.Status = status
 		}
-
+		db.Events = append(db.Events, stationIncidentStatus)
 	}
+	return nil
+}
+
+func (db *DB) WriteDB() error {
+	f, err := os.OpenFile("db.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	b, err := json.Marshal(db)
+	if err != nil {
+		return err
+	}
+	f.WriteString(string(b))
 	return nil
 }

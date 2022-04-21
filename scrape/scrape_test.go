@@ -10,6 +10,7 @@ import (
 	"log"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/cwxstat/activeIncident/constants"
 	test_fixtures "github.com/cwxstat/activeIncident/test-fixtures"
@@ -100,4 +101,34 @@ func Test_LiveCheck(t *testing.T) {
 
 	}
 
+}
+
+func TestDB_GetsEverything(t *testing.T) {
+	type fields struct {
+		Time   time.Time
+		Events []StationIncidentStatus
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr bool
+	}{
+		{
+			name:    "One run",
+			fields:  fields{
+				Time:   time.Time{},
+				Events: []StationIncidentStatus{},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db := NewDB()
+			if err := db.GetsEverything(); (err != nil) != tt.wantErr {
+				t.Errorf("DB.GetsEverything() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			db.WriteDB()
+		})
+	}
 }
