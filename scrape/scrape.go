@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"context"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strings"
-	"encoding/json"
 	"os"
+	"strings"
 
 	"github.com/cwxstat/activeIncident/constants"
 	"golang.org/x/net/html"

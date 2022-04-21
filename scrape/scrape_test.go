@@ -114,8 +114,8 @@ func TestDB_GetsEverything(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "One run",
-			fields:  fields{
+			name: "One run",
+			fields: fields{
 				Time:   time.Time{},
 				Events: []StationIncidentStatus{},
 			},
