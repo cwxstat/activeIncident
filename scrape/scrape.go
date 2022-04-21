@@ -265,8 +265,8 @@ func (db *DB) GetsEverything() error {
 	return nil
 }
 
-func (db *DB) WriteDB() error {
-	f, err := os.OpenFile("db.json", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+func (db *DB) WriteDB(file string) error {
+	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		return err
 	}

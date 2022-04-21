@@ -7,6 +7,7 @@ package cmd
 import (
 	"os"
 	"time"
+	"log"
 
 	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/spf13/cobra"
@@ -28,7 +29,12 @@ to quickly create a Cobra application.`,
 		db := scrape.NewDB()
 		for {
 			db.GetsEverything()
-			db.WriteDB()
+			if err := db.WriteDB("/data/activeIncident.db"); err != nil {
+				log.Println(err)
+				if err := db.WriteDB("/tmp/activeIncident.db"); err != nil {
+					panic(err)
+				}
+			}
 			time.Sleep(time.Second * 90)
 
 		}
