@@ -16,7 +16,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-var debug = true
+var debug = false
 
 // Headers contains all HTTP headers to send
 var Headers = make(map[string]string)
