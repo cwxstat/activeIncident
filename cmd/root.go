@@ -5,9 +5,9 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"log"
 	"os"
 	"time"
-	"log"
 
 	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/spf13/cobra"

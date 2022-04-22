@@ -210,14 +210,16 @@ type StationIncidentStatus struct {
 }
 
 type DB struct {
-	Time   time.Time
-	Events []StationIncidentStatus
+	Count      int64
+	TimeUpdate time.Time
+	CreateTime time.Time
+	Events     []StationIncidentStatus
 }
 
 func NewDB() *DB {
 	return &DB{
-		Time:   time.Now(),
-		Events: []StationIncidentStatus{},
+		CreateTime: time.Now(),
+		Events:     []StationIncidentStatus{},
 	}
 }
 
@@ -261,6 +263,8 @@ func (db *DB) GetsEverything() error {
 			stationIncidentStatus.Status = status
 		}
 		db.Events = append(db.Events, stationIncidentStatus)
+		db.TimeUpdate = time.Now()
+		db.Count++
 	}
 	return nil
 }
