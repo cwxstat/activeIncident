@@ -30,11 +30,11 @@ to quickly create a Cobra application.`,
 		for {
 			err := db.GetsEverything()
 			if err != nil {
-				log.Println("db.GetsEverything(): ",err)
+				log.Println("db.GetsEverything(): ", err)
 			}
 			err = db.ClearDB("/data/allevents.json", 1000)
 			if err != nil {
-				log.Println("db.ClearDB: ",err)
+				log.Println("db.ClearDB: ", err)
 			}
 			time.Sleep(time.Second * 90)
 

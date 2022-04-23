@@ -2,8 +2,8 @@ package scrape
 
 import (
 	"errors"
-	"time"
 	"log"
+	"time"
 
 	"context"
 	"encoding/json"
@@ -211,11 +211,11 @@ type StationIncidentStatus struct {
 }
 
 type DB struct {
-	Count      int64
-	TimeUpdate time.Time
-	CreateTime time.Time
+	Count       int64
+	TimeUpdate  time.Time
+	CreateTime  time.Time
 	FileStation string
-	Events     []StationIncidentStatus
+	Events      []StationIncidentStatus
 }
 
 func NewDB() *DB {
