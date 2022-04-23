@@ -32,7 +32,7 @@ to quickly create a Cobra application.`,
 			if err != nil {
 				log.Println("db.GetsEverything(): ", err)
 			}
-			err = db.ClearDB("/data/allevents.json", 1000)
+			err = db.ClearDB("/data/allevents.json."+time.Now().Format(time.RFC3339), 1000)
 			if err != nil {
 				log.Println("db.ClearDB: ", err)
 			}
