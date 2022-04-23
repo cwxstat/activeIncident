@@ -167,6 +167,7 @@ func GetDetail(purl string) string {
 func GetTable(s string) ([]string, error) {
 	doc, err := html.Parse(strings.NewReader(s))
 	r := []string{}
+	stime := ""
 
 	if err != nil {
 		return r, err
@@ -187,7 +188,15 @@ func GetTable(s string) ([]string, error) {
 				}
 
 				if c.FirstChild.Data == "font" {
-					r = append(r, c.FirstChild.FirstChild.Data)
+
+					if c.FirstChild.FirstChild.NextSibling != nil && c.FirstChild.FirstChild.NextSibling.Data == "br" {
+						stime = c.FirstChild.FirstChild.Data + "T"
+						stime = stime + c.FirstChild.FirstChild.NextSibling.NextSibling.Data
+						r = append(r, stime)
+					} else {
+						r = append(r, c.FirstChild.FirstChild.Data)
+					}
+
 				} else {
 					r = append(r, c.FirstChild.Data)
 				}
