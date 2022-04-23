@@ -189,6 +189,7 @@ func GetTable(s string) ([]string, error) {
 
 				if c.FirstChild.Data == "font" {
 
+					// Datetime has <br>
 					if c.FirstChild.FirstChild.NextSibling != nil && c.FirstChild.FirstChild.NextSibling.Data == "br" {
 						stime = c.FirstChild.FirstChild.Data + "T"
 						stime = stime + c.FirstChild.FirstChild.NextSibling.NextSibling.Data
