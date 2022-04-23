@@ -5,9 +5,9 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"log"
 	"os"
 	"time"
-	"log"
 
 	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/spf13/cobra"
@@ -28,12 +28,13 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		db := scrape.NewDB()
 		for {
-			db.GetsEverything()
-			if err := db.WriteDB("/data/activeIncident.db"); err != nil {
-				log.Println(err)
-				if err := db.WriteDB("/tmp/activeIncident.db"); err != nil {
-					panic(err)
-				}
+			err := db.GetsEverything()
+			if err != nil {
+				log.Println("db.GetsEverything(): ", err)
+			}
+			err = db.ClearDB("/data/allevents.json", 1000)
+			if err != nil {
+				log.Println("db.ClearDB: ", err)
 			}
 			time.Sleep(time.Second * 90)
 
