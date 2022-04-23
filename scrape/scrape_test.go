@@ -128,7 +128,7 @@ func TestDB_GetsEverything(t *testing.T) {
 			if err := db.GetsEverything(); (err != nil) != tt.wantErr {
 				t.Errorf("DB.GetsEverything() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			db.WriteDB()
+
 		})
 	}
 }
