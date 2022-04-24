@@ -30,3 +30,16 @@ cfssl gencert \
 gcloud compute addresses create mongo --global
 gcloud compute addresses list
 ```
+
+```bash
+k cp certs-no-git mongodb/mongo-64d9bfb689-ttn8v:/data/db/certs
+
+```
+
+This puts files
+
+mongod --tlsMode=requireTLS --tlsCertificateKeyFile=/data/db/certs/mongo-certs-key.pem --tlsCAFile=/data/db/certs/ca.pem
+
+
+
+openssl x509 -outform der -in ca.pem -out ca.crt 
