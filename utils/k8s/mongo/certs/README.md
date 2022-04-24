@@ -51,3 +51,7 @@ openssl x509 -outform der -in ca.pem -out ca.crt
 
 
 mongo --disableImplicitSessions --eval "db.adminCommand('ping')" --tlsCertificateKeyFile=/data/db/certs/merged.pem --tls --tlsCAFile=/data/db/certs/ca.pem
+
+## Use This
+
+mongosh --tlsCertificateKeyFile=/etc/mongo/certs/merged.pem --tls --tlsCAFile=/etc/mongo/certs/ca.pem --tlsAllowInvalidCertificates
