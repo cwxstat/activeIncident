@@ -25,7 +25,38 @@ spec:
         ports:
           - containerPort: 27017
         name: mongo
-        args: ["--dbpath","/data/db","--tlsMode","requireTLS","--tlsCertificateKeyFile","/data/db/certs/merged.pem","--tlsCAFile=/data/db/certs/ca.pem"]
+        args: ["--dbpath","/data/db","--tlsMode","requireTLS","--tlsCertificateKeyFile","/data/db/certs/merged.pem","--tlsCAFile","/data/db/certs/ca.pem"]
+
+        livenessProbe:
+          exec:
+            command:
+              - mongo
+              - --disableImplicitSessions
+              - --eval
+              - "db.adminCommand('ping')"
+              - --tlsCertificateKeyFile=/data/db/certs/merged.pem 
+              - --tls
+              - --tlsCAFile=/data/db/certs/ca.pem
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+              - mongo
+              - --disableImplicitSessions
+              - --eval
+              - "db.adminCommand('ping')"
+              - --tlsCertificateKeyFile=/data/db/certs/merged.pem 
+              - --tls
+              - --tlsCAFile=/data/db/certs/ca.pem
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
         volumeMounts:
         - name: "mongo-data-dir"
           mountPath: "/data/db"
