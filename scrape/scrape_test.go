@@ -62,6 +62,22 @@ func TestGetTable(t *testing.T) {
 	fmt.Printf("%v\n", result)
 }
 
+func Test_Departure(t *testing.T) {
+	url := constants.WebCadURL + "livecad.asp?print=yes"
+	r, err := Get(url)
+	if err != nil {
+		t.Fatalf("err: %s\n", err)
+	}
+
+	util.WriteString("mainPage", r, 0644)
+
+	list, err := GetMainTable(r)
+	if err != nil {
+		t.FailNow()
+	}
+	fmt.Println(list)
+}
+
 func Test_LiveCheck(t *testing.T) {
 
 	defer util.NewTlib().ConstructDir()()

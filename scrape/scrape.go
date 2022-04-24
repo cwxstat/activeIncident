@@ -164,6 +164,61 @@ func GetDetail(purl string) string {
 	return strings.Replace(url, " ", "%20", -1)
 }
 
+func GetMainTable(s string) ([]string, error) {
+	doc, err := html.Parse(strings.NewReader(s))
+	r := []string{}
+	stag := ""
+
+	if err != nil {
+		return r, err
+	}
+	var f func(*html.Node)
+
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "table" {
+
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+
+			if c.Data == "td" {
+
+				if c.FirstChild.Data == "b" {
+					//c = c.FirstChild
+					return
+				}
+
+				if c.FirstChild.Data == "font" {
+
+					// Datetime has <br>
+					if c.FirstChild.FirstChild.NextSibling != nil && c.FirstChild.FirstChild.NextSibling.Data == "br" {
+						stag = c.FirstChild.FirstChild.Data + "T"
+						stag = stag + c.FirstChild.FirstChild.NextSibling.NextSibling.Data
+						r = append(r, stag)
+					} else {
+						if c.FirstChild.FirstChild.Data == "a" && c.FirstChild.FirstChild.FirstChild != nil {
+							stag = c.FirstChild.FirstChild.FirstChild.Data
+							r = append(r, stag)
+						} else {
+							stag = c.FirstChild.FirstChild.Data
+							r = append(r, stag)
+						}
+
+					}
+
+				} else {
+					r = append(r, c.FirstChild.Data)
+				}
+
+			}
+
+			f(c)
+		}
+	}
+	f(doc)
+
+	return r, nil
+}
+
 func GetTable(s string) ([]string, error) {
 	doc, err := html.Parse(strings.NewReader(s))
 	r := []string{}
