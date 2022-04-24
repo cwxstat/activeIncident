@@ -19,6 +19,8 @@ spec:
     spec:
       containers:
       - image: mongo:4
+        ports:
+          - containerPort: 27017
         name: mongo
         args: ["--dbpath","/data/db"]
         livenessProbe:
@@ -52,3 +54,4 @@ spec:
       - name: "mongo-data-dir"
         persistentVolumeClaim:
           claimName: "mongo-storage"
+          readOnly: false
