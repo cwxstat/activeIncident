@@ -38,6 +38,9 @@ k cp certs-no-git mongodb/mongo-64d9bfb689-ttn8v:/data/db/certs
 
 This puts files
 
+mongod --tlsMode=requireTLS --tlsCertificateKeyFile=/data/db/certs/merged.pem --tlsCAFile=/data/db/certs/ca.pem
+
+
 mongod --tlsMode=requireTLS --tlsCertificateKeyFile=/data/db/certs/mongo-certs-key.pem --tlsCAFile=/data/db/certs/ca.pem
 
 
