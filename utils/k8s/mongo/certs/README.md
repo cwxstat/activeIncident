@@ -17,9 +17,16 @@ cfssl gencert \
   -ca=/tmp/ca.pem \
   -ca-key=/tmp/ca-key.pem \
   -config=./tls/ca-config.json \
-  -hostname="mongo,mongo.mongodb.svc.cluster.local,mongo.default.svc,localhost,127.0.0.1,mongo.pigbot.svc.cluster.local,34.111.92.27" \
+  -hostname="mongo,mongo.mongodb.svc.cluster.local,mongo.default.svc,localhost,127.0.0.1,mongo.pigbot.svc.cluster.local,34.117.143.215" \
   -profile=default \
   ./tls/ca-csr.json | cfssljson -bare /tmp/mongo-certs
 
 
+```
+
+# You need IP address
+
+```bash
+gcloud compute addresses create mongo --global
+gcloud compute addresses list
 ```
