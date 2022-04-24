@@ -31,12 +31,12 @@ func Mmain() {
 	ctx := context.Background()
 
 	// PORT environment variable is set in guestbook-backend.deployment.yaml.
-	port := os.Getenv("PORT")
+	port := "8080"
 	if port == "" {
 		log.Fatal("PORT environment variable not specified")
 	}
 	// GUESTBOOK_DB_ADDR environment variable is set in guestbook-backend.deployment.yaml.
-	dbAddr := os.Getenv("GUESTBOOK_DB_ADDR")
+	dbAddr := "mongo:27017"
 	if dbAddr == "" {
 		log.Fatal("GUESTBOOK_DB_ADDR environment variable not specified")
 	}

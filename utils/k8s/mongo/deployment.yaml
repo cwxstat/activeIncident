@@ -4,18 +4,21 @@ metadata:
   creationTimestamp: null
   labels:
     app: mongo
+    tier: db
   name: mongo
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: mongo
+      tier: db
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: mongo
+        tier: db
     spec:
       containers:
       - image: mongo:4
