@@ -30,6 +30,43 @@ type activeIncidentServer struct {
 }
 
 func NewActiveIncidentServer() (*activeIncidentServer, error) {
+	ctx := context.TODO()
+	uri := os.Getenv("MONGO_URI")
+
+	
+	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
+	clientOptions := options.Client().
+		ApplyURI(uri).
+		SetServerAPIOptions(serverAPIOptions)
+
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(ctx)
+
+	err = client.Database("activeIncident").CreateCollection(ctx,"junk")
+	if err != nil {
+		client.Database("activeIncident").Collection("junk").Drop(ctx)
+		fmt.Println("drop junk",err)
+		
+	} else {
+		fmt.Println("created junk")
+		AddRecord(client)
+	}
+	
+	a := &activeIncidentServer{
+		db: &mongodb{
+			conn: client,
+		},
+	}
+	return a,nil
+}
+
+
+
+func oldNewActiveIncidentServer() (*activeIncidentServer, error) {
+
 	ctx := context.Background()
 
 	mongoURI := os.Getenv("MONGO_URI")
@@ -50,8 +87,56 @@ func NewActiveIncidentServer() (*activeIncidentServer, error) {
 			conn: dbConn,
 		},
 	}
+
+
+	AddRecord(dbConn)
+
+
 	return a, nil
 }
+
+func AddRecord(client *mongo.Client) error {
+
+	col := client.Database("guestbook").Collection("entries")
+
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*3)
+	defer cancel()
+	g := &guestbookEntry{
+		Author:  "Susan and more",
+		Message: "Here I ame",
+		Date:    time.Now(),
+	}
+	v, err := col.InsertOne(ctx, g)
+	if err != nil {
+		log.Println(err)
+	} else {
+		log.Println("no error: ",v)
+	}
+	return err
+}
+
+
+
+func (s *activeIncidentServer) addRecord() error {
+
+	v := guestbookEntry{
+		Author:  "Susan",
+		Message: "Okay .. makes sense",
+		Date:    time.Now(),
+	}
+
+	ctx := context.Background()
+	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
+	defer cancel()
+
+
+	if err := s.db.addEntry(connCtx, v); err != nil {
+		return err
+	}
+	log.Printf("entry saved: author=%q message=%q", v.Author, v.Message)
+	return nil
+}
+
 
 // main starts a server listening on $PORT responding to requests "GET
 // /messages" and "POST /messages" with a JSON API.
