@@ -6,8 +6,11 @@ metadata:
     app: mongo
     tier: db
 spec:
+  type: LoadBalancer
+  loadBalancerIP: 34.117.143.215
   ports:
-    - port: 27017
+    - protocol: TCP
+      port: 27017
       targetPort: 27017
   selector:
     app: mongo
