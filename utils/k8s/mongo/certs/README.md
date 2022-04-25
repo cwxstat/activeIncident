@@ -55,3 +55,5 @@ mongo --disableImplicitSessions --eval "db.adminCommand('ping')" --tlsCertificat
 ## Use This
 
 mongosh --tlsCertificateKeyFile=/etc/mongo/certs/merged.pem --tls --tlsCAFile=/etc/mongo/certs/ca.pem --tlsAllowInvalidCertificates
+
+gsutil ls gs://mchirico-configs/certs-mongo

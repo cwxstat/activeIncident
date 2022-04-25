@@ -25,8 +25,7 @@ spec:
         ports:
           - containerPort: 27017
         name: mongo
-        args: ["--dbpath","/data/db","--tlsMode","requireTLS","--tlsCertificateKeyFile","/data/db/certs/merged.pem","--tlsCAFile","/data/db/certs/ca.pem"]
-
+        args: ["--dbpath","/data/db","--tlsMode","requireTLS","--tlsCertificateKeyFile","/data/db/certs/merged.pem","--tlsCAFile","/data/db/certs/ca.pem","--auth"]
         livenessProbe:
           exec:
             command:
@@ -57,6 +56,17 @@ spec:
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 6
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-creds
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-creds
+              key: password
         volumeMounts:
         - name: "mongo-data-dir"
           mountPath: "/data/db"
