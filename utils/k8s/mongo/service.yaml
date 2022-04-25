@@ -10,7 +10,7 @@ spec:
   loadBalancerIP: 34.117.143.215
   ports:
     - protocol: TCP
-      port: 443
+      port: 27017
       targetPort: 27017
   selector:
     app: mongo
