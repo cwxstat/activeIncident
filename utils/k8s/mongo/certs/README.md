@@ -17,7 +17,7 @@ cfssl gencert \
   -ca=/tmp/ca.pem \
   -ca-key=/tmp/ca-key.pem \
   -config=./tls/ca-config.json \
-  -hostname="mongo,mongo.mongodb.svc.cluster.local,mongo.default.svc,localhost,127.0.0.1,mongo.pigbot.svc.cluster.local,34.117.143.215" \
+  -hostname="mongo,mongo.mongodb.svc.cluster.local,mongo.default.svc,localhost,127.0.0.1,mongo.pigbot.svc.cluster.local,34.117.143.215,34.66.213.165,mongo.cwxstat.io" \
   -profile=default \
   ./tls/ca-csr.json | cfssljson -bare /tmp/mongo-certs
 
@@ -27,12 +27,12 @@ cfssl gencert \
 # You need IP address
 
 ```bash
-gcloud compute addresses create mongo --global
+gcloud compute addresses create mongo  --region=us-central1
 gcloud compute addresses list
 ```
 
 ```bash
-k cp certs-no-git mongodb/mongo-64d9bfb689-ttn8v:/data/db/certs
+k cp certs-no-git-2 mongodb/mongo-6f588b9955-tnkzr:/data/db/certs2
 
 ```
 
@@ -57,3 +57,5 @@ mongo --disableImplicitSessions --eval "db.adminCommand('ping')" --tlsCertificat
 mongosh --tlsCertificateKeyFile=/etc/mongo/certs/merged.pem --tls --tlsCAFile=/etc/mongo/certs/ca.pem --tlsAllowInvalidCertificates
 
 gsutil ls gs://mchirico-configs/certs-mongo
+
+

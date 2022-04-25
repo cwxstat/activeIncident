@@ -25,6 +25,34 @@ type guestbookServer struct {
 	db database
 }
 
+type activeIncidentServer struct {
+	db database
+}
+
+func NewActiveIncidentServer() (*activeIncidentServer, error) {
+	ctx := context.Background()
+
+	mongoURI := os.Getenv("MONGO_URI")
+	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
+	defer cancel()
+	dbConn, err := mongo.Connect(connCtx, options.Client().ApplyURI(mongoURI))
+	if err != nil {
+
+		log.Printf("failed to initialize connection to mongodb: %+v", err)
+		return nil, err
+	}
+	if err := dbConn.Ping(connCtx, readpref.Primary()); err != nil {
+		log.Printf("ping to mongodb failed: %+v", err)
+		return nil, err
+	}
+	a := &activeIncidentServer{
+		db: &mongodb{
+			conn: dbConn,
+		},
+	}
+	return a, nil
+}
+
 // main starts a server listening on $PORT responding to requests "GET
 // /messages" and "POST /messages" with a JSON API.
 func Mmain() {
@@ -35,13 +63,8 @@ func Mmain() {
 	if port == "" {
 		log.Fatal("PORT environment variable not specified")
 	}
-	// GUESTBOOK_DB_ADDR environment variable is set in guestbook-backend.deployment.yaml.
-	dbAddr := "mongo:27017"
-	if dbAddr == "" {
-		log.Fatal("GUESTBOOK_DB_ADDR environment variable not specified")
-	}
 
-	mongoURI := "mongodb://" + dbAddr
+	mongoURI := os.Getenv("MONGO_URI")
 	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
 	defer cancel()
 	dbConn, err := mongo.Connect(connCtx, options.Client().ApplyURI(mongoURI))

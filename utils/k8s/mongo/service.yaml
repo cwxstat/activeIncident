@@ -7,7 +7,7 @@ metadata:
     tier: db
 spec:
   type: LoadBalancer
-  loadBalancerIP: 34.117.143.215
+  loadBalancerIP: 34.66.213.165
   ports:
     - protocol: TCP
       port: 27017
