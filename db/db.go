@@ -14,11 +14,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// guestbookEntry represents the message object returned in the API.
-type guestbookEntry struct {
+// activeIncidentEntry represents the message object returned in the API.
+type activeIncidentEntry struct {
 	Author  string    `json:"author" bson:"author"`
 	Message string    `json:"message" bson:"message"`
-	Date    time.Time `json:"date" bson:"date"`
+	TimeStamp    time.Time `json:"date" bson:"date"`
 }
 
 type guestbookServer struct {
@@ -33,9 +33,13 @@ type activeIncidentServer struct {
     connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
 	defer cancel()
 */
-func Conn(ctx context.Context) (*mongo.Client, error) {
+func conn(ctx context.Context) (*mongo.Client, error) {
 
 	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Println("MONGO_URI environment variable not specified")
+		return nil, fmt.Errorf("MONGO_URI environment variable not specified")
+	}
 
 	dbConn, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
 	if err != nil {
@@ -52,64 +56,17 @@ func Conn(ctx context.Context) (*mongo.Client, error) {
 
 }
 
-func NewActiveIncidentServer() (*activeIncidentServer, error) {
-	ctx := context.TODO()
-	uri := os.Getenv("MONGO_URI")
+func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error) {
 
-	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
-	clientOptions := options.Client().
-		ApplyURI(uri).
-		SetServerAPIOptions(serverAPIOptions)
-
-	client, err := mongo.Connect(ctx, clientOptions)
+	client, err := conn(ctx)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	defer client.Disconnect(ctx)
-
-	err = client.Database("activeIncident").CreateCollection(ctx, "junk")
-	if err != nil {
-		client.Database("activeIncident").Collection("junk").Drop(ctx)
-		fmt.Println("drop junk", err)
-
-	} else {
-		fmt.Println("created junk")
-		AddRecord(client)
-	}
-
 	a := &activeIncidentServer{
 		db: &mongodb{
 			conn: client,
 		},
 	}
-	return a, nil
-}
-
-func oldNewActiveIncidentServer() (*activeIncidentServer, error) {
-
-	ctx := context.Background()
-
-	mongoURI := os.Getenv("MONGO_URI")
-	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
-	defer cancel()
-	dbConn, err := mongo.Connect(connCtx, options.Client().ApplyURI(mongoURI))
-	if err != nil {
-
-		log.Printf("failed to initialize connection to mongodb: %+v", err)
-		return nil, err
-	}
-	if err := dbConn.Ping(connCtx, readpref.Primary()); err != nil {
-		log.Printf("ping to mongodb failed: %+v", err)
-		return nil, err
-	}
-	a := &activeIncidentServer{
-		db: &mongodb{
-			conn: dbConn,
-		},
-	}
-
-	AddRecord(dbConn)
-
 	return a, nil
 }
 
@@ -119,10 +76,10 @@ func AddRecord(client *mongo.Client) error {
 
 	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*3)
 	defer cancel()
-	g := &guestbookEntry{
+	g := &activeIncidentEntry{
 		Author:  "Susan and more",
 		Message: "Here I ame",
-		Date:    time.Now(),
+		TimeStamp:    time.Now(),
 	}
 	v, err := col.InsertOne(ctx, g)
 	if err != nil {
@@ -135,10 +92,10 @@ func AddRecord(client *mongo.Client) error {
 
 func (s *activeIncidentServer) addRecord() error {
 
-	v := guestbookEntry{
+	v := activeIncidentEntry{
 		Author:  "Susan",
 		Message: "Okay .. makes sense",
-		Date:    time.Now(),
+		TimeStamp:    time.Now(),
 	}
 
 	ctx := context.Background()
@@ -215,7 +172,7 @@ func (s *guestbookServer) getMessagesHandler(w http.ResponseWriter, r *http.Requ
 func (s *guestbookServer) postMessageHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	var v guestbookEntry
+	var v activeIncidentEntry
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
 		http.Error(w, fmt.Sprintf("failed to decode request body into json: %+v", err), http.StatusBadRequest)
 		return
@@ -229,7 +186,7 @@ func (s *guestbookServer) postMessageHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	v.Date = time.Now()
+	v.TimeStamp = time.Now()
 
 	if err := s.db.addEntry(r.Context(), v); err != nil {
 		http.Error(w, fmt.Sprintf("failed to save entry: %+v", err), http.StatusInternalServerError)

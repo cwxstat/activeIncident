@@ -14,7 +14,7 @@ type mongodb struct {
 	conn *mongo.Client
 }
 
-func (m *mongodb) entries(ctx context.Context) ([]guestbookEntry, error) {
+func (m *mongodb) entries(ctx context.Context) ([]activeIncidentEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
@@ -27,9 +27,9 @@ func (m *mongodb) entries(ctx context.Context) ([]guestbookEntry, error) {
 	}
 	defer cur.Close(ctx)
 
-	var out []guestbookEntry
+	var out []activeIncidentEntry
 	for cur.Next(ctx) {
-		var v guestbookEntry
+		var v activeIncidentEntry
 		if err := cur.Decode(&v); err != nil {
 			return nil, fmt.Errorf("decoding mongodb record failed: %+v", err)
 		}
@@ -41,7 +41,7 @@ func (m *mongodb) entries(ctx context.Context) ([]guestbookEntry, error) {
 	return out, nil
 }
 
-func (m *mongodb) addEntry(ctx context.Context, e guestbookEntry) error {
+func (m *mongodb) addEntry(ctx context.Context, e activeIncidentEntry) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 
