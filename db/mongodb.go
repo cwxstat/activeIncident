@@ -18,7 +18,7 @@ func (m *mongodb) entries(ctx context.Context) ([]activeIncidentEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	col := m.conn.Database("guestbook").Collection("entries")
+	col := m.conn.Database("activeIncident").Collection("entries")
 	cur, err := col.Find(ctx, bson.D{}, &options.FindOptions{
 		Sort: map[string]interface{}{"_id": -1},
 	})
@@ -45,7 +45,7 @@ func (m *mongodb) addEntry(ctx context.Context, e activeIncidentEntry) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 
-	col := m.conn.Database("guestbook").Collection("entries")
+	col := m.conn.Database("activeIncident").Collection("entries")
 	if _, err := col.InsertOne(ctx, e); err != nil {
 		return fmt.Errorf("mongodb.InsertOne failed: %+v", err)
 	}
