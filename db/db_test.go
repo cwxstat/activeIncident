@@ -59,12 +59,12 @@ func TestConn(t *testing.T) {
 		ctx, cancel := context.WithTimeout(tt.args.ctx, time.Second*30)
 		defer cancel()
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Conn(ctx)
+			client, err := Conn(ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Conn() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			_ = got
+			defer client.Disconnect(ctx)
 		})
 	}
 }
