@@ -29,11 +29,42 @@ type activeIncidentServer struct {
 	db database
 }
 
+/*
+    connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
+	defer cancel()
+*/
+func Conn(ctx context.Context) (*mongo.Client, error) {
+
+	mongoURI := os.Getenv("MONGO_URI")
+	
+	dbConn, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
+	if err != nil {
+
+		log.Printf("failed to initialize connection to mongodb: %+v", err)
+		return nil, err
+	}
+	if err := dbConn.Ping(ctx, readpref.Primary()); err != nil {
+		log.Printf("ping to mongodb failed: %+v", err)
+		return nil, err
+	}
+	
+	return dbConn, nil
+
+}
+
+
 func NewActiveIncidentServer() (*activeIncidentServer, error) {
 	ctx := context.TODO()
 	uri := os.Getenv("MONGO_URI")
 
 	
+	
+
+
+
+
+
+
 	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().
 		ApplyURI(uri).
