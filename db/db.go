@@ -14,15 +14,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// activeIncidentEntry represents the message object returned in the API.
-type activeIncidentEntry struct {
-	MainPage  string    `json:"mainPage" bson:"mainPage"`
-	Message   string    `json:"message" bson:"message"`
-	TimeStamp time.Time `json:"date" bson:"date"`
+type IncidentPage struct {
+	IncidentPage string `json:"incidentPage" bson:"incidentPage"`
 }
 
-type guestbookServer struct {
-	db database
+// activeIncidentEntry represents the message object returned in the API.
+type activeIncidentEntry struct {
+	MainPage      string `json:"mainPage" bson:"mainPage"`
+	IncidentPages []IncidentPage
+	Message       string    `json:"message" bson:"message"`
+	TimeStamp     time.Time `json:"date" bson:"date"`
 }
 
 type activeIncidentServer struct {
