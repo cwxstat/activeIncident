@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"testing"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -47,14 +48,18 @@ func TestConn(t *testing.T) {
 	}{
 		{
 			name:    "Simple connection test",
-			args:    args{},
+			args:    args{
+				ctx: context.TODO(),
+			},
 			want:    &mongo.Client{},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
+		ctx, cancel := context.WithTimeout(tt.args.ctx, time.Second*30)
+		defer cancel()
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Conn(tt.args.ctx)
+			got, err := Conn(ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Conn() error = %v, wantErr %v", err, tt.wantErr)
 				return
