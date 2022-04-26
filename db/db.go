@@ -14,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+
 type IncidentWebPage struct {
 	Page string `json:"incidentPage" bson:"incidentPage"`
 }
