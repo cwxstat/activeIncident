@@ -36,7 +36,7 @@ type activeIncidentServer struct {
 func Conn(ctx context.Context) (*mongo.Client, error) {
 
 	mongoURI := os.Getenv("MONGO_URI")
-	
+
 	dbConn, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
 	if err != nil {
 
@@ -47,23 +47,14 @@ func Conn(ctx context.Context) (*mongo.Client, error) {
 		log.Printf("ping to mongodb failed: %+v", err)
 		return nil, err
 	}
-	
+
 	return dbConn, nil
 
 }
 
-
 func NewActiveIncidentServer() (*activeIncidentServer, error) {
 	ctx := context.TODO()
 	uri := os.Getenv("MONGO_URI")
-
-	
-	
-
-
-
-
-
 
 	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().
@@ -76,25 +67,23 @@ func NewActiveIncidentServer() (*activeIncidentServer, error) {
 	}
 	defer client.Disconnect(ctx)
 
-	err = client.Database("activeIncident").CreateCollection(ctx,"junk")
+	err = client.Database("activeIncident").CreateCollection(ctx, "junk")
 	if err != nil {
 		client.Database("activeIncident").Collection("junk").Drop(ctx)
-		fmt.Println("drop junk",err)
-		
+		fmt.Println("drop junk", err)
+
 	} else {
 		fmt.Println("created junk")
 		AddRecord(client)
 	}
-	
+
 	a := &activeIncidentServer{
 		db: &mongodb{
 			conn: client,
 		},
 	}
-	return a,nil
+	return a, nil
 }
-
-
 
 func oldNewActiveIncidentServer() (*activeIncidentServer, error) {
 
@@ -119,9 +108,7 @@ func oldNewActiveIncidentServer() (*activeIncidentServer, error) {
 		},
 	}
 
-
 	AddRecord(dbConn)
-
 
 	return a, nil
 }
@@ -141,12 +128,10 @@ func AddRecord(client *mongo.Client) error {
 	if err != nil {
 		log.Println(err)
 	} else {
-		log.Println("no error: ",v)
+		log.Println("no error: ", v)
 	}
 	return err
 }
-
-
 
 func (s *activeIncidentServer) addRecord() error {
 
@@ -160,14 +145,12 @@ func (s *activeIncidentServer) addRecord() error {
 	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
 	defer cancel()
 
-
 	if err := s.db.addEntry(connCtx, v); err != nil {
 		return err
 	}
 	log.Printf("entry saved: author=%q message=%q", v.Author, v.Message)
 	return nil
 }
-
 
 // main starts a server listening on $PORT responding to requests "GET
 // /messages" and "POST /messages" with a JSON API.

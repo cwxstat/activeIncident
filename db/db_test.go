@@ -47,8 +47,8 @@ func TestConn(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Simple connection test",
-			args:    args{
+			name: "Simple connection test",
+			args: args{
 				ctx: context.TODO(),
 			},
 			want:    &mongo.Client{},
