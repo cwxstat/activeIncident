@@ -14,16 +14,34 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type IncidentPage struct {
-	IncidentPage string `json:"incidentPage" bson:"incidentPage"`
+type IncidentWebPage struct {
+	Page string `json:"incidentPage" bson:"incidentPage"`
+}
+
+type IncidentStatus struct {
+	TimeStamp string `json:"timeStamp" bson:"timeStamp"`
+	Unit      string `json:"unit" bson:"unit"`
+	Status    string `json:"status" bson:"status"`
+	Notes     string `json:"notes" bson:"notes"`
+}
+
+type Incident struct {
+	IncidentNo      string `json:"incidentNo" bson:"incidentNo"`
+	IncidentType    string `json:"incidentType" bson:"incidentType"`
+	IncidentSubTupe string `json:"incidentSubType" bson:"incidentSubType"`
+	Location        string `json:"location" bson:"location"`
+	DispatchTime    string `json:"dispatchTime" bson:"dispatchTime"`
+	Station         string `json:"station" bson:"station"`
+	IncidentStatus  []IncidentStatus
 }
 
 // activeIncidentEntry represents the message object returned in the API.
 type activeIncidentEntry struct {
-	MainPage      string `json:"mainPage" bson:"mainPage"`
-	IncidentPages []IncidentPage
-	Message       string    `json:"message" bson:"message"`
-	TimeStamp     time.Time `json:"date" bson:"date"`
+	MainWebPage      string `json:"mainWebPage" bson:"mainWebPage"`
+	IncidentWebPages []Incident
+	Incidents        []Incident
+	Message          string    `json:"message" bson:"message"`
+	TimeStamp        time.Time `json:"date" bson:"date"`
 }
 
 type activeIncidentServer struct {
@@ -74,9 +92,9 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 func (s *activeIncidentServer) addRecord() error {
 
 	v := activeIncidentEntry{
-		MainPage:  "Susan",
-		Message:   "Okay .. makes sense",
-		TimeStamp: time.Now(),
+		MainWebPage: "Susan",
+		Message:     "Okay .. makes sense",
+		TimeStamp:   time.Now(),
 	}
 
 	ctx := context.Background()
@@ -86,6 +104,6 @@ func (s *activeIncidentServer) addRecord() error {
 	if err := s.db.addEntry(connCtx, v); err != nil {
 		return err
 	}
-	log.Printf("entry saved: author=%q message=%q", v.MainPage, v.Message)
+	log.Printf("entry saved: author=%q message=%q", v.MainWebPage, v.Message)
 	return nil
 }
