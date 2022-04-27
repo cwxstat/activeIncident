@@ -5,7 +5,7 @@ import (
 )
 
 type database interface {
-	entries(context.Context) ([]guestbookEntry, error)
-	addEntry(context.Context, guestbookEntry) error
+	entries(context.Context) ([]activeIncidentEntry, error)
+	addEntry(context.Context, activeIncidentEntry) error
+	deleteAll(context.Context, string) error
 }
-
