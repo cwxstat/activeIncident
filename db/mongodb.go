@@ -51,3 +51,14 @@ func (m *mongodb) addEntry(ctx context.Context, e activeIncidentEntry) error {
 	}
 	return nil
 }
+
+func (m *mongodb) deleteAll(ctx context.Context, message string) error {
+	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+	defer cancel()
+
+	col := m.conn.Database("activeIncident").Collection("entries")
+	if _, err := col.DeleteMany(ctx, bson.M{"message": message}); err != nil {
+		return fmt.Errorf("mongodb.DeleteOne failed: %+v", err)
+	}
+	return nil
+}

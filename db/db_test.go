@@ -9,6 +9,40 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+func TestFull(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
+	defer cancel()
+	as, err := NewActiveIncidentServer(ctx)
+	if err != nil {
+		t.FailNow()
+	}
+
+	iwebp := []IncidentWebPage{
+		IncidentWebPage{
+			Page: "Page1",
+		},
+		IncidentWebPage{
+			Page: "Page2",
+		},
+	}
+
+	err = as.db.addEntry(ctx, activeIncidentEntry{
+		MainWebPage:      "Main",
+		IncidentWebPages: iwebp,
+		Incidents:        []Incident{},
+		Message:          "Test Message",
+		TimeStamp:        time.Now(),
+	})
+	if err != nil {
+		t.FailNow()
+	}
+
+	err = as.db.deleteAll(ctx, "Test Message")
+	if err != nil {
+		t.FailNow()
+	}
+}
+
 func TestConn(t *testing.T) {
 	type args struct {
 		ctx context.Context

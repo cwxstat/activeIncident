@@ -14,7 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-
 type IncidentWebPage struct {
 	Page string `json:"incidentPage" bson:"incidentPage"`
 }
@@ -39,7 +38,7 @@ type Incident struct {
 // activeIncidentEntry represents the message object returned in the API.
 type activeIncidentEntry struct {
 	MainWebPage      string `json:"mainWebPage" bson:"mainWebPage"`
-	IncidentWebPages []Incident
+	IncidentWebPages []IncidentWebPage
 	Incidents        []Incident
 	Message          string    `json:"message" bson:"message"`
 	TimeStamp        time.Time `json:"date" bson:"date"`
