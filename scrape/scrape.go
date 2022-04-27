@@ -268,11 +268,13 @@ func GetTable(s string) ([]string, error) {
 }
 
 type StationIncidentStatus struct {
-	Time     time.Time
-	Count    int64
-	Station  map[string]string
-	Incident map[string]string
-	Status   []string
+	Time          time.Time
+	Count         int64
+	Station       map[string]string
+	Incident      map[string]string
+	Status        []string
+	WebStatusPage string
+	WebMainPage   string
 }
 
 type DB struct {
@@ -293,23 +295,25 @@ func NewDB() *DB {
 func (db *DB) GetsEverything() error {
 
 	url := constants.WebCadURL + "livecad.asp?print=yes"
-	r, err := Get(url)
+	mainPage, err := Get(url)
 	if err != nil {
 		return err
 	}
 
-	station, incident, err := Tag(r)
+	station, incident, err := Tag(mainPage)
 	if err != nil {
 		return err
 	}
 
 	for i, l := range incident {
 		stationIncidentStatus := StationIncidentStatus{}
-		r, err = Get(GetDetail(l))
+		statusPage, err := Get(GetDetail(l))
 		if err != nil {
 			return err
 		}
 
+		stationIncidentStatus.WebStatusPage = statusPage
+		stationIncidentStatus.WebMainPage = mainPage
 		if len(station) <= i {
 			stationIncidentStatus.Time = time.Now()
 			stationIncidentStatus.Station = map[string]string{"none": "none"}
@@ -321,7 +325,7 @@ func (db *DB) GetsEverything() error {
 			stationIncidentStatus.Incident = strip(l)
 		}
 
-		if status, err := GetTable(r); err == nil {
+		if status, err := GetTable(statusPage); err == nil {
 			stationIncidentStatus.Status = status
 		}
 		db.WriteStationIncidentStatus("/data/activeIncidents.json", stationIncidentStatus)
