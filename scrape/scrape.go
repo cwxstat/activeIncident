@@ -2,14 +2,12 @@ package scrape
 
 import (
 	"errors"
-	"log"
-	"time"
 
 	"context"
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"os"
+	"time"
+
 	"strings"
 
 	"github.com/cwxstat/activeIncident/constants"
@@ -265,115 +263,4 @@ func GetTable(s string) ([]string, error) {
 	f(doc)
 
 	return r, nil
-}
-
-type StationIncidentStatus struct {
-	Time          time.Time
-	Count         int64
-	Station       map[string]string
-	Incident      map[string]string
-	Status        []string
-	WebStatusPage string
-	WebMainPage   string
-}
-
-type DB struct {
-	Count       int64
-	TimeUpdate  time.Time
-	CreateTime  time.Time
-	FileStation string
-	Events      []StationIncidentStatus
-}
-
-func NewDB() *DB {
-	return &DB{
-		CreateTime: time.Now(),
-		Events:     []StationIncidentStatus{},
-	}
-}
-
-func (db *DB) GetsEverything() error {
-
-	url := constants.WebCadURL + "livecad.asp?print=yes"
-	mainPage, err := Get(url)
-	if err != nil {
-		return err
-	}
-
-	station, incident, err := Tag(mainPage)
-	if err != nil {
-		return err
-	}
-
-	for i, l := range incident {
-		stationIncidentStatus := StationIncidentStatus{}
-		statusPage, err := Get(GetDetail(l))
-		if err != nil {
-			return err
-		}
-
-		stationIncidentStatus.WebStatusPage = statusPage
-		stationIncidentStatus.WebMainPage = mainPage
-		if len(station) <= i {
-			stationIncidentStatus.Time = time.Now()
-			stationIncidentStatus.Station = map[string]string{"none": "none"}
-			stationIncidentStatus.Incident = strip(l)
-
-		} else {
-			stationIncidentStatus.Time = time.Now()
-			stationIncidentStatus.Station = strip(station[i])
-			stationIncidentStatus.Incident = strip(l)
-		}
-
-		if status, err := GetTable(statusPage); err == nil {
-			stationIncidentStatus.Status = status
-		}
-		db.WriteStationIncidentStatus("/data/activeIncidents.json", stationIncidentStatus)
-		db.Events = append(db.Events, stationIncidentStatus)
-		db.TimeUpdate = time.Now()
-		db.Count++
-	}
-	return nil
-}
-
-func (db *DB) WriteStationIncidentStatus(file string, s StationIncidentStatus) error {
-	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	b, err := json.Marshal(s)
-	if err != nil {
-		return err
-	}
-	f.WriteString(string(b))
-	return nil
-}
-
-// WriteDB complete write
-func (db *DB) WriteEventsAll(file string) error {
-	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	b, err := json.Marshal(db.Events)
-	if err != nil {
-		return err
-	}
-	f.WriteString(string(b))
-	return nil
-}
-
-func (db *DB) ClearDB(file string, count int64) error {
-	if db.Count >= count {
-		err := db.WriteEventsAll(file)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		db.Events = []StationIncidentStatus{}
-		db.Count = 0
-	}
-	return nil
 }
