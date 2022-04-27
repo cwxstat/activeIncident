@@ -5,13 +5,13 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"log"
 	"os"
 	"time"
-	"context"
 
-	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/cwxstat/activeIncident/db"
+	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +37,7 @@ to quickly create a Cobra application.`,
 				time.Sleep(time.Second * 50)
 				continue
 			}
-		
+
 			ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
 			defer cancel()
 			as, err := db.NewActiveIncidentServer(ctx)
@@ -47,7 +47,6 @@ to quickly create a Cobra application.`,
 				continue
 			}
 
-		
 			err = as.AddEntry(ctx, a)
 			if err != nil {
 				log.Println(err)
