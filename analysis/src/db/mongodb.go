@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type mongodb struct {
@@ -18,7 +19,16 @@ func (m *mongodb) entries(ctx context.Context, minutes int) ([]ActiveIncidentEnt
 	defer cancel()
 
 	col := m.conn.Database("activeIncident").Collection("entries")
-	cur, err := col.Find(ctx, bson.D{{"date", bson.D{{"$gt", time.Now().Add(-time.Minute * time.Duration(minutes))}}}})
+	// Only return these fields
+	opts := options.Find().SetProjection(bson.D{
+
+		{"incidents", 1},
+		{"date", 1},
+		{"_id", 1},
+	})
+
+	cur, err := col.Find(ctx,
+		bson.D{{"date", bson.D{{"$gt", time.Now().Add(-time.Minute * time.Duration(minutes))}}}}, opts)
 	if err != nil {
 		return nil, fmt.Errorf("mongodb.Find failed: %+v", err)
 	}
