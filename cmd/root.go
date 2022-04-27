@@ -8,8 +8,10 @@ import (
 	"log"
 	"os"
 	"time"
+	"context"
 
 	"github.com/cwxstat/activeIncident/scrape"
+	"github.com/cwxstat/activeIncident/db"
 	"github.com/spf13/cobra"
 )
 
@@ -26,17 +28,34 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		db := scrape.NewDB()
+
 		for {
-			err := db.GetsEverything()
+
+			a, err := scrape.AddDB()
 			if err != nil {
-				log.Println("db.GetsEverything(): ", err)
+				log.Println(err)
+				time.Sleep(time.Second * 5)
+				continue
 			}
-			err = db.ClearDB("/data/allevents.json."+time.Now().Format(time.RFC3339), 1000)
+		
+			ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
+			defer cancel()
+			as, err := db.NewActiveIncidentServer(ctx)
 			if err != nil {
-				log.Println("db.ClearDB: ", err)
+				log.Println(err)
+				time.Sleep(time.Second * 5)
+				continue
 			}
-			time.Sleep(time.Second * 90)
+
+		
+			err = as.AddEntry(ctx, a)
+			if err != nil {
+				log.Println(err)
+				time.Sleep(time.Second * 5)
+				continue
+			}
+			log.Println("entry added")
+			time.Sleep(time.Second * 40)
 
 		}
 
