@@ -88,22 +88,3 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	}
 	return a, nil
 }
-
-func (s *activeIncidentServer) addRecord() error {
-
-	v := activeIncidentEntry{
-		MainWebPage: "Susan",
-		Message:     "Okay .. makes sense",
-		TimeStamp:   time.Now(),
-	}
-
-	ctx := context.Background()
-	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
-	defer cancel()
-
-	if err := s.db.addEntry(connCtx, v); err != nil {
-		return err
-	}
-	log.Printf("entry saved: author=%q message=%q", v.MainWebPage, v.Message)
-	return nil
-}
