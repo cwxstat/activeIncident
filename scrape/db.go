@@ -71,7 +71,7 @@ func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 		if err != nil {
 			return err
 		}
-
+		aie.IncidentWebPages = append(aie.IncidentWebPages, db.IncidentWebPage{Page: string(r)})
 		if status, err := GetTable(r); err == nil {
 
 			for i := 0; i < len(status); i += 3 {
