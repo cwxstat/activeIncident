@@ -34,7 +34,7 @@ to quickly create a Cobra application.`,
 			a, err := scrape.AddDB()
 			if err != nil {
 				log.Println(err)
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second * 50)
 				continue
 			}
 		
@@ -43,7 +43,7 @@ to quickly create a Cobra application.`,
 			as, err := db.NewActiveIncidentServer(ctx)
 			if err != nil {
 				log.Println(err)
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second * 50)
 				continue
 			}
 
@@ -51,7 +51,7 @@ to quickly create a Cobra application.`,
 			err = as.AddEntry(ctx, a)
 			if err != nil {
 				log.Println(err)
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second * 50)
 				continue
 			}
 			log.Println("entry added")
