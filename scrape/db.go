@@ -76,7 +76,15 @@ func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 
 			for i := 0; i < len(status); i += 3 {
 
-				if len(status) <= i+3 {
+				if len(status) < i+3 {
+					continue
+				}
+
+				if len(status) == i+2 {
+					aie.Incidents[index].IncidentStatus = append(
+						aie.Incidents[index].IncidentStatus,
+						db.IncidentStatus{TimeStamp: status[i],
+							Status: status[i+1]})
 					continue
 				}
 
