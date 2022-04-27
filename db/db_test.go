@@ -26,7 +26,7 @@ func TestFull(t *testing.T) {
 		},
 	}
 
-	err = as.db.addEntry(ctx, activeIncidentEntry{
+	err = as.db.addEntry(ctx, ActiveIncidentEntry{
 		MainWebPage:      "Main",
 		IncidentWebPages: iwebp,
 		Incidents:        []Incident{},
