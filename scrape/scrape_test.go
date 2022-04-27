@@ -62,7 +62,7 @@ func TestGetTable(t *testing.T) {
 	fmt.Printf("%v\n", result)
 }
 
-func Test_Departure(t *testing.T) {
+func Test_GetMainTable(t *testing.T) {
 	url := constants.WebCadURL + "livecad.asp?print=yes"
 	r, err := Get(url)
 	if err != nil {
@@ -112,7 +112,7 @@ func Test_LiveCheck(t *testing.T) {
 		}
 
 		if status, err := GetTable(r); err == nil {
-			fmt.Printf("%v\n", status)
+			fmt.Printf("status: %v\n", status)
 		}
 
 	}

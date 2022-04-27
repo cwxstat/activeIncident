@@ -30,13 +30,14 @@ type Incident struct {
 	IncidentType    string `json:"incidentType" bson:"incidentType"`
 	IncidentSubTupe string `json:"incidentSubType" bson:"incidentSubType"`
 	Location        string `json:"location" bson:"location"`
+	Municipality    string `json:"municipality" bson:"municipality"`
 	DispatchTime    string `json:"dispatchTime" bson:"dispatchTime"`
 	Station         string `json:"station" bson:"station"`
 	IncidentStatus  []IncidentStatus
 }
 
-// activeIncidentEntry represents the message object returned in the API.
-type activeIncidentEntry struct {
+// ActiveIncidentEntry represents the message object returned in the API.
+type ActiveIncidentEntry struct {
 	MainWebPage      string `json:"mainWebPage" bson:"mainWebPage"`
 	IncidentWebPages []IncidentWebPage
 	Incidents        []Incident
@@ -89,21 +90,6 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	return a, nil
 }
 
-func (s *activeIncidentServer) addRecord() error {
-
-	v := activeIncidentEntry{
-		MainWebPage: "Susan",
-		Message:     "Okay .. makes sense",
-		TimeStamp:   time.Now(),
-	}
-
-	ctx := context.Background()
-	connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
-	defer cancel()
-
-	if err := s.db.addEntry(connCtx, v); err != nil {
-		return err
-	}
-	log.Printf("entry saved: author=%q message=%q", v.MainWebPage, v.Message)
-	return nil
+func (a *activeIncidentServer) AddEntry(ctx context.Context, entry *ActiveIncidentEntry) error {
+	return a.db.addEntry(ctx, *entry)
 }
