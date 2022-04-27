@@ -30,7 +30,7 @@ type Incident struct {
 	IncidentType    string `json:"incidentType" bson:"incidentType"`
 	IncidentSubTupe string `json:"incidentSubType" bson:"incidentSubType"`
 	Location        string `json:"location" bson:"location"`
-	Municipality	string `json:"municipality" bson:"municipality"`
+	Municipality    string `json:"municipality" bson:"municipality"`
 	DispatchTime    string `json:"dispatchTime" bson:"dispatchTime"`
 	Station         string `json:"station" bson:"station"`
 	IncidentStatus  []IncidentStatus
