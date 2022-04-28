@@ -51,7 +51,7 @@ to quickly create a Cobra application.`,
 				continue
 			}
 			log.Println("entry added")
-			time.Sleep(time.Second * constants.RefreshRate)
+			time.Sleep(constants.RefreshRate)
 
 		}
 

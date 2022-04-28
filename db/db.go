@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 	"log"
+	"strings"
 
 	"os"
 	"time"
@@ -84,7 +85,9 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	}
 	a := &activeIncidentServer{
 		db: &mongodb{
-			conn: client,
+			conn:       client,
+			database:   strings.TrimSuffix(os.Getenv("MONGO_DB"), "activeIncidents"),
+			collection: strings.TrimSuffix(os.Getenv("MONGO_COLLECTION"), "events"),
 		},
 	}
 	return a, nil

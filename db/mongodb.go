@@ -11,7 +11,14 @@ import (
 )
 
 type mongodb struct {
-	conn *mongo.Client
+	conn       *mongo.Client
+	database   string
+	collection string
+}
+
+func (m *mongodb) databaseCollection(database string, collection string) {
+	m.database = database
+	m.collection = collection
 }
 
 func (m *mongodb) entries(ctx context.Context) ([]ActiveIncidentEntry, error) {
