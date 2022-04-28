@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/spf13/cobra"
@@ -50,7 +51,7 @@ to quickly create a Cobra application.`,
 				continue
 			}
 			log.Println("entry added")
-			time.Sleep(time.Second * 40)
+			time.Sleep(time.Second * constants.RefreshRate)
 
 		}
 
