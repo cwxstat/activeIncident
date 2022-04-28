@@ -5,7 +5,7 @@ import (
 
 	"fmt"
 	"log"
-	"strings"
+
 
 	"os"
 	"time"
@@ -77,17 +77,26 @@ func conn(ctx context.Context) (*mongo.Client, error) {
 
 }
 
+func LookupEnv(key string, defaultValue string) string {
+	env := defaultValue
+	if val, ok := os.LookupEnv(key); ok {
+		env = val
+	}
+	return env
+}
+
 func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error) {
 
 	client, err := conn(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	a := &activeIncidentServer{
 		db: &mongodb{
 			conn:       client,
-			database:   strings.TrimSuffix(os.Getenv("MONGO_DB"), "activeIncidents"),
-			collection: strings.TrimSuffix(os.Getenv("MONGO_COLLECTION"), "events"),
+			database:   LookupEnv("MONGO_DB", "activeIncident"),
+			collection: LookupEnv("MONGO_COLLECTION", "events"),
 		},
 	}
 	return a, nil
@@ -95,4 +104,8 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 
 func (a *activeIncidentServer) AddEntry(ctx context.Context, entry *ActiveIncidentEntry) error {
 	return a.db.addEntry(ctx, *entry)
+}
+
+func (a *activeIncidentServer) DatabaseCollection(database string, collection string) {
+	a.db.databaseCollection(database, collection)
 }

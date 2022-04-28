@@ -25,7 +25,7 @@ func (m *mongodb) entries(ctx context.Context) ([]ActiveIncidentEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	col := m.conn.Database("activeIncident").Collection("entries")
+	col := m.conn.Database(m.database).Collection(m.collection)
 	cur, err := col.Find(ctx, bson.D{}, &options.FindOptions{
 		Sort: map[string]interface{}{"_id": -1},
 	})
@@ -52,7 +52,7 @@ func (m *mongodb) addEntry(ctx context.Context, e ActiveIncidentEntry) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 
-	col := m.conn.Database("activeIncident").Collection("entries")
+	col := m.conn.Database(m.database).Collection(m.collection)
 	if _, err := col.InsertOne(ctx, e); err != nil {
 		return fmt.Errorf("mongodb.InsertOne failed: %+v", err)
 	}
@@ -63,7 +63,7 @@ func (m *mongodb) deleteAll(ctx context.Context, message string) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 
-	col := m.conn.Database("activeIncident").Collection("entries")
+	col := m.conn.Database(m.database).Collection(m.collection)
 	if _, err := col.DeleteMany(ctx, bson.M{"message": message}); err != nil {
 		return fmt.Errorf("mongodb.DeleteOne failed: %+v", err)
 	}

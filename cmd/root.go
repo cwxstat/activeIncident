@@ -42,12 +42,14 @@ to quickly create a Cobra application.`,
 			as, err := db.NewActiveIncidentServer(ctx)
 			if err != nil {
 				log.Println(err)
+				time.Sleep(constants.ErrorBackoff)
+				continue
 			}
 
 			err = as.AddEntry(ctx, a)
 			if err != nil {
 				log.Println(err)
-				time.Sleep(time.Second * 50)
+				time.Sleep(constants.ErrorBackoff)
 				continue
 			}
 			log.Println("entry added")
