@@ -1,0 +1,4 @@
+
+db.myColl.createIndex(
+   { score: 1, price: 1, category: 1 },
+   { collation: { locale: "fr" } } )
