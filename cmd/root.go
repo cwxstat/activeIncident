@@ -29,14 +29,17 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
-		defer cancel()
-		as, err := db.NewActiveIncidentServer(ctx)
-		if err != nil {
-			log.Panic(err)
-		}
 
 		for {
+
+			ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
+			defer cancel()
+			as, err := db.NewActiveIncidentServer(ctx)
+			if err != nil {
+				log.Println(err)
+				time.Sleep(constants.ErrorBackoff)
+				continue
+			}
 
 			a, err := scrape.AddDB()
 			if err != nil {
