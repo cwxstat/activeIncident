@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/scrape"
 	"github.com/spf13/cobra"
@@ -41,16 +42,18 @@ to quickly create a Cobra application.`,
 			as, err := db.NewActiveIncidentServer(ctx)
 			if err != nil {
 				log.Println(err)
+				time.Sleep(constants.ErrorBackoff)
+				continue
 			}
 
 			err = as.AddEntry(ctx, a)
 			if err != nil {
 				log.Println(err)
-				time.Sleep(time.Second * 50)
+				time.Sleep(constants.ErrorBackoff)
 				continue
 			}
 			log.Println("entry added")
-			time.Sleep(time.Second * 40)
+			time.Sleep(constants.RefreshRate)
 
 		}
 

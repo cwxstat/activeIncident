@@ -17,6 +17,8 @@ func TestFull(t *testing.T) {
 		t.FailNow()
 	}
 
+	as.DatabaseCollection("test", "test")
+
 	iwebp := []IncidentWebPage{
 		IncidentWebPage{
 			Page: "Page1",
