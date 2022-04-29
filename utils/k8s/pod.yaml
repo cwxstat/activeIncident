@@ -12,7 +12,7 @@ spec:
         readOnly: false
   containers:
     - name: active-incident-container
-      image: us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.13
+      image: us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.18
       env:
       - name: MONGO_URI
         valueFrom:
