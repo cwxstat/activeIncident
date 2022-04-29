@@ -11,7 +11,7 @@ import (
 
 func TestPopulate(t *testing.T) {
 
-	a, err := dbpop.AddDB()
+	a, err := dbpop.PopulateActiveIncidentEntry()
 	if err != nil {
 		t.Fatal(err)
 	}
