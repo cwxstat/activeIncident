@@ -23,7 +23,7 @@ func (m *mongodb) entries(ctx context.Context, minutes int) ([]ActiveIncidentEnt
 	// Only return these fields
 	opts := options.Find().SetProjection(bson.D{
 		{"incidents", 1},
-		{"date", 1},
+		{"date", -1},
 		{"_id", 1},
 	})
 
