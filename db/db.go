@@ -109,6 +109,10 @@ func (a *activeIncidentServer) AddEntry(ctx context.Context, entry *ActiveIncide
 	return a.db.addEntry(ctx, *entry)
 }
 
+func (a *activeIncidentServer) EntriesMinutesAgo(ctx context.Context, min int) ([]ActiveIncidentEntry, error) {
+	return a.db.entriesMinutesAgo(ctx, min)
+}
+
 func (a *activeIncidentServer) DatabaseCollection(database string, collection string) {
 	a.db.databaseCollection(database, collection)
 }

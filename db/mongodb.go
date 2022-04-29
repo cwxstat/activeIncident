@@ -25,6 +25,41 @@ func (m *mongodb) disconnect(ctx context.Context) error {
 	return m.conn.Disconnect(ctx)
 }
 
+func (m *mongodb) entriesMinutesAgo(ctx context.Context, minutes int) ([]ActiveIncidentEntry, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	// Only return these fields
+	opts := options.Find().SetProjection(bson.D{
+		{"incidents", 1},
+		{"date", -1},
+		{"_id", 1},
+	})
+
+	col := m.conn.Database(m.database).Collection(m.collection)
+
+	cur, err := col.Find(ctx,
+		bson.D{{"date", bson.D{{"$gt", time.Now().Add(-time.Minute * time.Duration(minutes))}}}}, opts)
+	if err != nil {
+		return nil, fmt.Errorf("mongodb.Find failed: %+v", err)
+	}
+
+	defer cur.Close(ctx)
+
+	var out []ActiveIncidentEntry
+	for cur.Next(ctx) {
+		var v ActiveIncidentEntry
+		if err := cur.Decode(&v); err != nil {
+			return nil, fmt.Errorf("decoding mongodb record failed: %+v", err)
+		}
+		out = append(out, v)
+	}
+	if err := cur.Err(); err != nil {
+		return nil, fmt.Errorf("failed to iterate on mongodb cursor: %+v", err)
+	}
+	return out, nil
+}
+
 func (m *mongodb) entries(ctx context.Context) ([]ActiveIncidentEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()

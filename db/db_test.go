@@ -43,6 +43,12 @@ func TestFull(t *testing.T) {
 	if err != nil {
 		t.FailNow()
 	}
+
+	err = as.db.disconnect(ctx)
+	if err != nil {
+		t.FailNow()
+	}
+
 }
 
 func TestConn(t *testing.T) {
