@@ -6,7 +6,8 @@ import (
 
 var (
 	WebCadChester = "https://webcad.chesco.org/WebCad/webcad.asp"
-	WebCadMontco  = "https://webapp07.montcopa.org/eoc/cadinfo/livecad.asp?print=yes"
+	WebCadMontcoPrint  = "https://webapp07.montcopa.org/eoc/cadinfo/livecad.asp?print=yes"
+	WebCadMontco  = "https://webapp07.montcopa.org/eoc/cadinfo/"
 	RefreshRate   = time.Second * 70
 	ErrorBackoff  = time.Second * 200
 )

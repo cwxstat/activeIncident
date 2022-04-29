@@ -10,7 +10,7 @@ import (
 func AddDB() (*db.ActiveIncidentEntry, error) {
 
 	aie := &db.ActiveIncidentEntry{}
-	url := constants.WebCadMontco
+	url := constants.WebCadMontcoPrint
 	r, err := Get(url)
 	if err != nil {
 		return aie, err
@@ -56,7 +56,7 @@ func PopulateIncident(url string) ([]db.Incident, error) {
 
 func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 
-	url := constants.WebCadMontco
+	url := constants.WebCadMontcoPrint
 	r, err := Get(url)
 	if err != nil {
 		return err
