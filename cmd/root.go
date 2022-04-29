@@ -32,28 +32,30 @@ to quickly create a Cobra application.`,
 
 		for {
 
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
-			defer cancel()
-			as, err := db.NewActiveIncidentServer(ctx)
-			if err != nil {
-				log.Println(err)
-				time.Sleep(constants.ErrorBackoff)
-				continue
-			}
+			func() {
+				ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
+				defer cancel()
+				as, err := db.NewActiveIncidentServer(ctx)
+				if err != nil {
+					log.Println(err)
+					time.Sleep(constants.ErrorBackoff)
+					return
+				}
 
-			a, err := scrape.AddDB()
-			if err != nil {
-				log.Println(err)
-			}
+				a, err := scrape.AddDB()
+				if err != nil {
+					log.Println(err)
+				}
 
-			err = as.AddEntry(ctx, a)
-			if err != nil {
-				log.Println(err)
-				time.Sleep(constants.ErrorBackoff)
-				continue
-			}
-			log.Println("entry added")
-			time.Sleep(constants.RefreshRate)
+				err = as.AddEntry(ctx, a)
+				if err != nil {
+					log.Println(err)
+					time.Sleep(constants.ErrorBackoff)
+					return
+				}
+				log.Println("entry added")
+				time.Sleep(constants.RefreshRate)
+			}()
 
 		}
 
