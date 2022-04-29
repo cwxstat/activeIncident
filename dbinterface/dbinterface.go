@@ -8,7 +8,6 @@ import (
 	"github.com/cwxstat/activeIncident/scrape"
 )
 
-
 func AddDB() (*db.ActiveIncidentEntry, error) {
 
 	aie := &db.ActiveIncidentEntry{}
