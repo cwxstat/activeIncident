@@ -62,7 +62,7 @@ func TestGetTable(t *testing.T) {
 }
 
 func Test_GetMainTable(t *testing.T) {
-	url := constants.WebCadMontco
+	url := constants.WebCadMontcoPrint
 	r, err := Get(url)
 	if err != nil {
 		t.Fatalf("err: %s\n", err)
@@ -81,7 +81,7 @@ func Test_LiveCheck(t *testing.T) {
 
 	defer util.NewTlib().ConstructDir()()
 
-	url := constants.WebCadMontco
+	url := constants.WebCadMontcoPrint
 	r, err := Get(url)
 	if err != nil {
 		t.Fatalf("err: %s\n", err)
