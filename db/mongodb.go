@@ -21,6 +21,10 @@ func (m *mongodb) databaseCollection(database string, collection string) {
 	m.collection = collection
 }
 
+func (m *mongodb) disconnect(ctx context.Context) error {
+	return m.conn.Disconnect(ctx)
+}
+
 func (m *mongodb) entries(ctx context.Context) ([]ActiveIncidentEntry, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
@@ -67,5 +71,6 @@ func (m *mongodb) deleteAll(ctx context.Context, message string) error {
 	if _, err := col.DeleteMany(ctx, bson.M{"message": message}); err != nil {
 		return fmt.Errorf("mongodb.DeleteOne failed: %+v", err)
 	}
+
 	return nil
 }

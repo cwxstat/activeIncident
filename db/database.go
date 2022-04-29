@@ -9,4 +9,5 @@ type database interface {
 	addEntry(context.Context, ActiveIncidentEntry) error
 	deleteAll(context.Context, string) error
 	databaseCollection(string, string)
+	disconnect(context.Context) error
 }

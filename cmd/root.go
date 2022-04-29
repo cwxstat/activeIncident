@@ -52,6 +52,9 @@ to quickly create a Cobra application.`,
 					log.Println(err)
 					return
 				}
+				if err := as.Disconnect(ctx); err != nil {
+					log.Println("as.Disconnect: ", err)
+				}
 				log.Println("entry added")
 
 			}()

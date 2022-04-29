@@ -101,6 +101,10 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	return a, nil
 }
 
+func (a *activeIncidentServer) Disconnect(ctx context.Context) error {
+	return a.db.disconnect(ctx)
+}
+
 func (a *activeIncidentServer) AddEntry(ctx context.Context, entry *ActiveIncidentEntry) error {
 	return a.db.addEntry(ctx, *entry)
 }
