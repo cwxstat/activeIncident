@@ -33,7 +33,7 @@ to quickly create a Cobra application.`,
 		for {
 
 			func() {
-				ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
+				ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 				defer cancel()
 				as, err := db.NewActiveIncidentServer(ctx)
 				if err != nil {

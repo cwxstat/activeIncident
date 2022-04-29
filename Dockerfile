@@ -20,8 +20,8 @@ ENTRYPOINT ["/bin/project"]
 # Args to project
 #CMD []
 
-# docker build --no-cache -t us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.16 -f Dockerfile .
-# docker push us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.16 
+# docker build --no-cache -t us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.17 -f Dockerfile .
+# docker push us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.17 
 # us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.1
 # kind load docker-image webdev:v0.0.1 webdev:v0.0.1
 #  kubectl create deployment --image=webdev:v0.0.1
