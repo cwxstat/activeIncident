@@ -158,7 +158,7 @@ func cleanUp(s string) string {
 }
 
 func GetDetail(purl string) string {
-	url := constants.WebCadURL + purl
+	url := constants.WebCadMontco
 	return strings.Replace(url, " ", "%20", -1)
 }
 
