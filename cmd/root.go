@@ -35,24 +35,24 @@ to quickly create a Cobra application.`,
 			func() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 				defer cancel()
-				as, err := db.NewActiveIncidentServer(ctx)
+				ais, err := db.NewActiveIncidentServer(ctx)
 				if err != nil {
 					log.Println(err)
 					time.Sleep(constants.ErrorBackoff)
 					return
 				}
 
-				a, err := dbpop.NewActiveIncidentEntry()
+				a, err := dbpop.PopulateActiveIncidentEntry()
 				if err != nil {
 					log.Println(err)
 				}
 
-				err = as.AddEntry(ctx, a)
+				err = ais.AddEntry(ctx, a)
 				if err != nil {
 					log.Println(err)
 					return
 				}
-				if err := as.Disconnect(ctx); err != nil {
+				if err := ais.Disconnect(ctx); err != nil {
 					log.Println("as.Disconnect: ", err)
 				}
 				log.Println("entry added")

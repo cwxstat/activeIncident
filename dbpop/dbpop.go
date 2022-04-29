@@ -8,7 +8,8 @@ import (
 	"github.com/cwxstat/activeIncident/scrape"
 )
 
-func NewActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
+// PopulateActiveIncidentEntryFromFile populates the ActiveIncidentEntry from a web
+func PopulateActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 
 	aie := &db.ActiveIncidentEntry{}
 	url := constants.WebCadMontcoPrint
@@ -28,6 +29,7 @@ func NewActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 	return aie, nil
 }
 
+// PopulateIncident populates the Incident from a web.
 func PopulateIncident(url string) ([]db.Incident, error) {
 	incidents := []db.Incident{}
 	incident := db.Incident{}
@@ -55,6 +57,8 @@ func PopulateIncident(url string) ([]db.Incident, error) {
 	return incidents, nil
 }
 
+// PopulateIncidentStatus populates the IncidentStatus from a web. Status
+// is the status of the incident, which is "Enroute", "Dispatched", "Arrived" ...
 func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 
 	url := constants.WebCadMontcoPrint
