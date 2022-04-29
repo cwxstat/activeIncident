@@ -1,17 +1,18 @@
-package scrape
+package dbpop
 
 import (
 	"time"
 
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
+	"github.com/cwxstat/activeIncident/scrape"
 )
 
 func AddDB() (*db.ActiveIncidentEntry, error) {
 
 	aie := &db.ActiveIncidentEntry{}
 	url := constants.WebCadMontcoPrint
-	r, err := Get(url)
+	r, err := scrape.Get(url)
 	if err != nil {
 		return aie, err
 	}
@@ -30,7 +31,7 @@ func AddDB() (*db.ActiveIncidentEntry, error) {
 func PopulateIncident(url string) ([]db.Incident, error) {
 	incidents := []db.Incident{}
 	incident := db.Incident{}
-	list, err := GetMainTable(url)
+	list, err := scrape.GetMainTable(url)
 	if err != nil {
 		return incidents, err
 	}
@@ -57,22 +58,22 @@ func PopulateIncident(url string) ([]db.Incident, error) {
 func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 
 	url := constants.WebCadMontcoPrint
-	r, err := Get(url)
+	r, err := scrape.Get(url)
 	if err != nil {
 		return err
 	}
 
-	_, incident, err := Tag(r)
+	_, incident, err := scrape.Tag(r)
 	if err != nil {
 		return err
 	}
 	for index, l := range incident {
-		r, err = Get(GetDetail(l))
+		r, err = scrape.Get(scrape.GetDetail(l))
 		if err != nil {
 			return err
 		}
 		aie.IncidentWebPages = append(aie.IncidentWebPages, db.IncidentWebPage{Page: string(r)})
-		if status, err := GetTable(r); err == nil {
+		if status, err := scrape.GetTable(r); err == nil {
 
 			for i := 0; i < len(status); i += 3 {
 

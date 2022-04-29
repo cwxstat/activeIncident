@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/cwxstat/activeIncident/db"
-	"github.com/cwxstat/activeIncident/scrape"
+	"github.com/cwxstat/activeIncident/dbpop"
 )
 
 func TestPopulate(t *testing.T) {
 
-	a, err := scrape.AddDB()
+	a, err := dbpop.AddDB()
 	if err != nil {
 		t.Fatal(err)
 	}
