@@ -59,7 +59,7 @@ func PopulateIncident(url string) ([]db.Incident, error) {
 func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 
 	url := constants.WebCadMontcoPrint
-	r, err := Get(url)
+	r, err := scrape.Get(url)
 	if err != nil {
 		return err
 	}
