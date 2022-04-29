@@ -10,7 +10,7 @@ import (
 )
 
 func TestFull(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
 	defer cancel()
 	as, err := NewActiveIncidentServer(ctx)
 	if err != nil {
@@ -36,6 +36,11 @@ func TestFull(t *testing.T) {
 		TimeStamp:        time.Now(),
 	})
 	if err != nil {
+		t.FailNow()
+	}
+
+	result, err := as.db.entriesMinutesAgo(ctx, 1)
+	if err != nil || len(result) != 1 {
 		t.FailNow()
 	}
 
