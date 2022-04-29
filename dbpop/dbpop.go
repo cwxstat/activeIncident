@@ -1,4 +1,4 @@
-package dbinterface
+package dbpop
 
 import (
 	"time"

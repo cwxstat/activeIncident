@@ -12,7 +12,7 @@ import (
 
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
-	"github.com/cwxstat/activeIncident/dbinterface"
+	"github.com/cwxstat/activeIncident/dbpop"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 					return
 				}
 
-				a, err := dbinterface.AddDB()
+				a, err := dbpop.AddDB()
 				if err != nil {
 					log.Println(err)
 				}
