@@ -8,7 +8,7 @@ import (
 	"github.com/cwxstat/activeIncident/scrape"
 )
 
-func AddDB() (*db.ActiveIncidentEntry, error) {
+func NewActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 
 	aie := &db.ActiveIncidentEntry{}
 	url := constants.WebCadMontcoPrint

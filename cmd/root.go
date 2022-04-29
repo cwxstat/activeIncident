@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 					return
 				}
 
-				a, err := dbpop.AddDB()
+				a, err := dbpop.NewActiveIncidentEntry()
 				if err != nil {
 					log.Println(err)
 				}
