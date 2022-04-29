@@ -33,7 +33,7 @@ to quickly create a Cobra application.`,
 		for {
 
 			func() {
-				ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
+				ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
 				defer cancel()
 				as, err := db.NewActiveIncidentServer(ctx)
 				if err != nil {
@@ -50,13 +50,13 @@ to quickly create a Cobra application.`,
 				err = as.AddEntry(ctx, a)
 				if err != nil {
 					log.Println(err)
-					time.Sleep(constants.ErrorBackoff)
 					return
 				}
 				log.Println("entry added")
-				time.Sleep(constants.RefreshRate)
+
 			}()
 
+			time.Sleep(constants.RefreshRate)
 		}
 
 	},
