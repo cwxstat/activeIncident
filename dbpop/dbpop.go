@@ -8,7 +8,7 @@ import (
 	"github.com/cwxstat/activeIncident/scrape"
 )
 
-// PopulateActiveIncidentEntryFromFile populates the ActiveIncidentEntry from a web
+// PopulateActiveIncidentEntry populates the ActiveIncidentEntry from a web
 func PopulateActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 
 	aie := &db.ActiveIncidentEntry{}
