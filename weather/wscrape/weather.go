@@ -8,7 +8,7 @@ import (
 	"github.com/cwxstat/activeIncident/dbutils"
 )
 
-var apiKey = dbutils.LookupEnv("OWM_API_KEYnowork", "18ef17bf4ee75f4eafca0c158a33929b")
+var apiKey = dbutils.LookupEnv("OWM_API_KEY", "18ef17bf4ee75f4eafca0c158a33929b")
 
 func Zips(zips []int) ([]string, error) {
 	var out []string
