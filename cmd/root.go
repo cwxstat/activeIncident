@@ -14,6 +14,7 @@ import (
 	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/dbpop"
 	"github.com/cwxstat/activeIncident/metrics"
+	wdb "github.com/cwxstat/activeIncident/weather/db"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,10 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		metrics.RecordMetrics()
+		go metrics.RecordMetrics()
+		log.Printf("Metrics Server  Starting")
+		// Get the weather data
+		go wdb.RunInGoRoutine()
 		for {
 
 			func() {

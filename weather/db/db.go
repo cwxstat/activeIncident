@@ -89,6 +89,7 @@ func PopulateWeather() (*WeatherEntry, error) {
 	return &WeatherEntry{}, nil
 }
 
+// go RunInGoRoutine()
 func RunInGoRoutine() {
 
 	for {
@@ -116,7 +117,7 @@ func RunInGoRoutine() {
 			if err := ais.Disconnect(ctx); err != nil {
 				log.Println("as.Disconnect: ", err)
 			}
-			log.Println("entry added")
+			log.Println("Weather data added")
 
 		}()
 

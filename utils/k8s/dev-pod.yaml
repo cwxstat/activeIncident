@@ -38,6 +38,12 @@ spec:
             name: mongo-creds
             key: weatherkey
 
+      - name: MONGO_WEATHER
+        valueFrom:
+          secretKeyRef:
+            name: mongo-creds
+            key: weathertestcollection
+
 
       volumeMounts:
         - mountPath: /etc/mongo

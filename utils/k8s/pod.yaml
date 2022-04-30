@@ -26,6 +26,13 @@ spec:
             name: mongo-creds
             key: weatherkey
 
+      - name: MONGO_WEATHER
+        valueFrom:
+          secretKeyRef:
+            name: mongo-creds
+            key: weathercollection
+
+
       volumeMounts:
         - mountPath: /etc/mongo
           name: active-incident-data-volume
