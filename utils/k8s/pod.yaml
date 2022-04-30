@@ -19,6 +19,13 @@ spec:
           secretKeyRef:
             name: mongo-creds
             key: mongouri
+
+      - name: OWM_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: mongo-creds
+            key: weatherkey
+
       volumeMounts:
         - mountPath: /etc/mongo
           name: active-incident-data-volume

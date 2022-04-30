@@ -32,6 +32,13 @@ spec:
             name: mongo-creds
             key: mongotestcollection
 
+      - name: OWM_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: mongo-creds
+            key: weatherkey
+
+
       volumeMounts:
         - mountPath: /etc/mongo
           name: active-incident-data-volume

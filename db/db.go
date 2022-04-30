@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/cwxstat/activeIncident/dbutils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -76,14 +77,6 @@ func conn(ctx context.Context) (*mongo.Client, error) {
 
 }
 
-func LookupEnv(key string, defaultValue string) string {
-	env := defaultValue
-	if val, ok := os.LookupEnv(key); ok {
-		env = val
-	}
-	return env
-}
-
 func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error) {
 
 	client, err := conn(ctx)
@@ -94,8 +87,8 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	a := &activeIncidentServer{
 		db: &mongodb{
 			conn:       client,
-			database:   LookupEnv("MONGO_DB", "activeIncident"),
-			collection: LookupEnv("MONGO_COLLECTION", "events"),
+			database:   dbutils.LookupEnv("MONGO_DB", "activeIncident"),
+			collection: dbutils.LookupEnv("MONGO_COLLECTION", "events"),
 		},
 	}
 	return a, nil

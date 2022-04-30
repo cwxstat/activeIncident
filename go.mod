@@ -3,6 +3,7 @@ module github.com/cwxstat/activeIncident
 go 1.18
 
 require (
+	github.com/briandowns/openweathermap v0.16.0
 	github.com/mchirico/tlib v0.0.0-20200127175021-67c50b75d102
 	github.com/prometheus/client_golang v1.12.1
 	github.com/spf13/cobra v1.4.0
