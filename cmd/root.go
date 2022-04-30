@@ -32,13 +32,14 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
-		go metrics.RecordMetrics()
+		go metrics.StartMetrics()
 		log.Printf("Metrics Server  Starting")
 		// Get the weather data
 		go wdb.RunInGoRoutine()
 		for {
 
 			func() {
+				metrics.RootStartLoops()
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 				defer cancel()
 				ais, err := db.NewActiveIncidentServer(ctx)
@@ -62,6 +63,7 @@ to quickly create a Cobra application.`,
 					log.Println("as.Disconnect: ", err)
 				}
 				log.Println("entry added")
+				metrics.RootProcessedLoops()
 
 			}()
 
