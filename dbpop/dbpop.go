@@ -1,8 +1,6 @@
 package dbpop
 
 import (
-	
-
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/dbutils"
