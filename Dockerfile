@@ -14,14 +14,15 @@ RUN go build -o /bin/project
 # FROM gcr.io/distroless/static
 # Below for debugging
 FROM golang:latest
-#FROM ubuntu:latest
+ENV TZ=America/New_York
 COPY --from=build /bin/project /bin/project
+ENV TZ=America/New_York
 ENTRYPOINT ["/bin/project"]
 # Args to project
 #CMD []
 
-# docker build --no-cache -t us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.23 -f Dockerfile .
-# docker push us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.23
+# docker build --no-cache -t us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.31 -f Dockerfile .
+# docker push us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.31
 # us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.1
 # kind load docker-image webdev:v0.0.1 webdev:v0.0.1
 #  kubectl create deployment --image=webdev:v0.0.1

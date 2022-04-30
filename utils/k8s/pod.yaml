@@ -12,13 +12,27 @@ spec:
         readOnly: false
   containers:
     - name: active-incident-container
-      image: us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.23
+      image: us-central1-docker.pkg.dev/mchirico/public/activeincident:v0.0.31
       env:
       - name: MONGO_URI
         valueFrom:
           secretKeyRef:
             name: mongo-creds
             key: mongouri
+
+      - name: OWM_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: mongo-creds
+            key: weatherkey
+
+      - name: MONGO_WEATHER
+        valueFrom:
+          secretKeyRef:
+            name: mongo-creds
+            key: weathercollection
+
+
       volumeMounts:
         - mountPath: /etc/mongo
           name: active-incident-data-volume
