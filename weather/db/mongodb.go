@@ -96,7 +96,7 @@ func (m *mongodb) addEntry(ctx context.Context, e WeatherEntry) error {
 	if _, err := col.InsertOne(ctx, e); err != nil {
 		return fmt.Errorf("mongodb.InsertOne failed: %+v", err)
 	}
-	log.Printf("Added entry: %+v,\n ->%+v<-, ->%+v<-\n", e, m.database, m.collection)
+	log.Printf("Added weather entry: ->%+v<-, ->%+v<-\n", m.database, m.collection)
 	return nil
 }
 
