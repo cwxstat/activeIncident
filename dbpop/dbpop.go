@@ -18,7 +18,7 @@ func PopulateActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 		return aie, err
 	}
 	aie.MainWebPage = r
-	aie.TimeStamp = time.Now()
+	aie.TimeStamp = db.NYtime()
 	aie.Incidents, err = PopulateIncident(r)
 	if err != nil {
 		return aie, err
