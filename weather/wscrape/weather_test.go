@@ -1,6 +1,7 @@
 package wscrape
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -33,7 +34,7 @@ func TestZips(t *testing.T) {
 				t.Errorf("Zips() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			_ = got
+			fmt.Println(got)
 		})
 	}
 }

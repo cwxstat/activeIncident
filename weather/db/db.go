@@ -22,8 +22,8 @@ type weatherServer struct {
 }
 
 type WeatherEntry struct {
-	Weather   []string  `json:"weather" bson:"weather"`
-	TimeStamp time.Time `json:"date" bson:"date"`
+	WeatherResponse wscrape.WeatherResponse
+	TimeStamp       time.Time `json:"date" bson:"date"`
 }
 
 func conn(ctx context.Context) (*mongo.Client, error) {
@@ -81,7 +81,7 @@ func PopulateWeather() (*WeatherEntry, error) {
 		19027,
 		18041,
 		18426}
-	we.Weather, err = wscrape.Zips(zips)
+	we.WeatherResponse, err = wscrape.Zips(zips)
 	we.TimeStamp = dbutils.NYtime()
 	if err != nil {
 		return &WeatherEntry{}, err
