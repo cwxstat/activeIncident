@@ -86,41 +86,46 @@ func PopulateWeather() (*WeatherEntry, error) {
 	if err != nil {
 		return &WeatherEntry{}, err
 	}
-	return &WeatherEntry{}, nil
+	return we, nil
 }
 
 // go RunInGoRoutine()
-func RunInGoRoutine() {
+func RunInGoRoutine(countlimit ...int64) error {
 
 	for {
 
-		func() {
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		err := func() error {
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second*40)
 			defer cancel()
 			ais, err := NewWeather(ctx)
 			if err != nil {
 				log.Println(err)
 				time.Sleep(constants.ErrorBackoff)
-				return
+				return err
 			}
 
 			a, err := PopulateWeather()
 			if err != nil {
 				log.Println(err)
+				return err
 			}
 
 			err = ais.AddEntry(ctx, a)
 			if err != nil {
 				log.Println(err)
-				return
+				return err
 			}
 			if err := ais.Disconnect(ctx); err != nil {
 				log.Println("as.Disconnect: ", err)
 			}
 			log.Println("Weather data added")
+			return nil
 
 		}()
-
+		// exit for testing
+		if len(countlimit) > 0 {
+			return err
+		}
 		time.Sleep(constants.RefreshRate)
 	}
 
