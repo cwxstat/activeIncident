@@ -1,10 +1,11 @@
 package dbpop
 
 import (
-	"time"
+	
 
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
+	"github.com/cwxstat/activeIncident/dbutils"
 	"github.com/cwxstat/activeIncident/scrape"
 )
 
@@ -18,7 +19,7 @@ func PopulateActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 		return aie, err
 	}
 	aie.MainWebPage = r
-	aie.TimeStamp = db.NYtime()
+	aie.TimeStamp = dbutils.NYtime()
 	aie.Incidents, err = PopulateIncident(r)
 	if err != nil {
 		return aie, err

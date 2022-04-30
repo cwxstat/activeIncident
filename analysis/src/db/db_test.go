@@ -31,7 +31,7 @@ func TestFull(t *testing.T) {
 		IncidentWebPages: iwebp,
 		Incidents:        []Incident{},
 		Message:          "Test Message",
-		TimeStamp:         db.NYtime(),
+		TimeStamp:         dbutils.NYtime(),
 	})
 	if err != nil {
 		t.FailNow()
