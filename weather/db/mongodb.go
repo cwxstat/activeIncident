@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -95,6 +96,7 @@ func (m *mongodb) addEntry(ctx context.Context, e WeatherEntry) error {
 	if _, err := col.InsertOne(ctx, e); err != nil {
 		return fmt.Errorf("mongodb.InsertOne failed: %+v", err)
 	}
+	log.Printf("Added entry: %+v,\n ->%+v<-, ->%+v<-\n", e,m.database,m.collection)
 	return nil
 }
 
