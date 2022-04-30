@@ -13,6 +13,7 @@ import (
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/dbpop"
+	"github.com/cwxstat/activeIncident/metrics"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +31,7 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 
+		metrics.RecordMetrics()
 		for {
 
 			func() {
