@@ -50,15 +50,7 @@ func (a *weatherServer) AddEntry(ctx context.Context, entry *WeatherEntry) error
 func PopulateWeather() (*WeatherEntry, error) {
 	we := &WeatherEntry{}
 	var err error
-	zips := []int{
-		19027,
-		18041,
-		18426,
-		18964,
-		19044,
-		19454,
-		19428}
-	we.WeatherResponse, err = wscrape.Zips(zips)
+	we.WeatherResponse, err = wscrape.Zips(constants.MontcoZipCodes)
 	we.TimeStamp = dbutils.NYtime()
 	if err != nil {
 		return &WeatherEntry{}, err
