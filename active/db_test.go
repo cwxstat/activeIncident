@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/cwxstat/activeIncident/dbutils"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func TestFull(t *testing.T) {
@@ -39,8 +41,12 @@ func TestFull(t *testing.T) {
 	if err != nil {
 		t.FailNow()
 	}
-
-	result, err := as.db.EntriesMinutesAgo(ctx, 1)
+	opts := options.Find().SetProjection(bson.D{
+		{"incidents", 1},
+		{"date", -1},
+		{"_id", 1},
+	})
+	result, err := as.db.EntriesMinutesAgo(ctx, 1, opts)
 	if err != nil {
 		t.FailNow()
 	}

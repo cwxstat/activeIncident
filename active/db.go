@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/cwxstat/activeIncident/dbutils"
-	db2 "github.com/cwxstat/activeIncident/dbutils/db"
+	"github.com/cwxstat/activeIncident/dbutils/db"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type IncidentWebPage struct {
@@ -42,7 +44,7 @@ type ActiveIncidentEntry struct {
 }
 
 type activeIncidentServer struct {
-	db db2.Database
+	db db.Database
 }
 
 func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error) {
@@ -53,7 +55,7 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	}
 
 	a := &activeIncidentServer{
-		db: &db2.Mongodb{
+		db: &db.Mongodb{
 			Conn:       client,
 			Database:   dbutils.LookupEnv("MONGO_DB", "activeIncident"),
 			Collection: dbutils.LookupEnv("MONGO_COLLECTION", "events"),
@@ -71,7 +73,14 @@ func (a *activeIncidentServer) AddEntry(ctx context.Context, entry *ActiveIncide
 }
 
 func (a *activeIncidentServer) EntriesMinutesAgo(ctx context.Context, min int) ([]ActiveIncidentEntry, error) {
-	result, err := a.db.EntriesMinutesAgo(ctx, min)
+
+	// Only return these fields
+	opts := options.Find().SetProjection(bson.D{
+		{"incidents", 1},
+		{"date", -1},
+		{"_id", 1},
+	})
+	result, err := a.db.EntriesMinutesAgo(ctx, min, opts)
 	if err != nil {
 		return nil, err
 	}
