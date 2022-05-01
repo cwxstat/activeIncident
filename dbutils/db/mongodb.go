@@ -25,17 +25,9 @@ func (m *Mongodb) Disconnect(ctx context.Context) error {
 	return m.Conn.Disconnect(ctx)
 }
 
-func (m *Mongodb) EntriesMinutesAgo(ctx context.Context, minutes int) (interface{}, error) {
+func (m *Mongodb) EntriesMinutesAgo(ctx context.Context, minutes int, opts *options.FindOptions) (interface{}, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-
-	// FIXME: (mmc) add as inpute parameter
-	// Only return these fields
-	opts := options.Find().SetProjection(bson.D{
-		{"incidents", 1},
-		{"date", -1},
-		{"_id", 1},
-	})
 
 	col := m.Conn.Database(m.Database).Collection(m.Collection)
 
