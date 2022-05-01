@@ -29,7 +29,7 @@ func TestFull(t *testing.T) {
 		},
 	}
 
-	err = as.db.addEntry(ctx, ActiveIncidentEntry{
+	err = as.db.AddEntry(ctx, ActiveIncidentEntry{
 		MainWebPage:      "Main",
 		IncidentWebPages: iwebp,
 		Incidents:        []Incident{},
@@ -40,17 +40,18 @@ func TestFull(t *testing.T) {
 		t.FailNow()
 	}
 
-	result, err := as.db.entriesMinutesAgo(ctx, 1)
-	if err != nil || len(result) != 1 {
-		t.FailNow()
-	}
-
-	err = as.db.deleteAll(ctx, "Test Message")
+	result, err := as.db.EntriesMinutesAgo(ctx, 1)
 	if err != nil {
 		t.FailNow()
 	}
 
-	err = as.db.disconnect(ctx)
+	_ = result
+	err = as.db.DeleteAll(ctx, "Test Message")
+	if err != nil {
+		t.FailNow()
+	}
+
+	err = as.db.Disconnect(ctx)
 	if err != nil {
 		t.FailNow()
 	}
@@ -80,7 +81,7 @@ func TestConn(t *testing.T) {
 		ctx, cancel := context.WithTimeout(tt.args.ctx, time.Second*30)
 		defer cancel()
 		t.Run(tt.name, func(t *testing.T) {
-			client, err := conn(ctx)
+			client, err := dbutils.Conn(ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Conn() error = %v, wantErr %v", err, tt.wantErr)
 				return

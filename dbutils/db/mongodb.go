@@ -25,7 +25,7 @@ func (m *Mongodb) Disconnect(ctx context.Context) error {
 	return m.Conn.Disconnect(ctx)
 }
 
-func (m *Mongodb) EntriesMinutesAgo(ctx context.Context, minutes int) ([]interface{}, error) {
+func (m *Mongodb) EntriesMinutesAgo(ctx context.Context, minutes int) (interface{}, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
