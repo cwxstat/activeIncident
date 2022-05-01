@@ -53,7 +53,11 @@ func PopulateWeather() (*WeatherEntry, error) {
 	zips := []int{
 		19027,
 		18041,
-		18426}
+		18426,
+		18964,
+		19044,
+		19454,
+		19428}
 	we.WeatherResponse, err = wscrape.Zips(zips)
 	we.TimeStamp = dbutils.NYtime()
 	if err != nil {
