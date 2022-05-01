@@ -3,18 +3,18 @@ package dbpop
 import (
 	"testing"
 
-	"github.com/cwxstat/activeIncident/db"
+	"github.com/cwxstat/activeIncident/active"
 )
 
 func TestAddDB(t *testing.T) {
 	tests := []struct {
 		name    string
-		want    *db.ActiveIncidentEntry
+		want    *active.ActiveIncidentEntry
 		wantErr bool
 	}{
 		{
 			name:    "Populate ActiveIncidentEntry",
-			want:    &db.ActiveIncidentEntry{},
+			want:    &active.ActiveIncidentEntry{},
 			wantErr: false,
 		},
 	}

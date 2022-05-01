@@ -1,16 +1,16 @@
 package dbpop
 
 import (
+	"github.com/cwxstat/activeIncident/active"
 	"github.com/cwxstat/activeIncident/constants"
-	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/dbutils"
 	"github.com/cwxstat/activeIncident/scrape"
 )
 
 // PopulateActiveIncidentEntry populates the ActiveIncidentEntry from a web
-func PopulateActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
+func PopulateActiveIncidentEntry() (*active.ActiveIncidentEntry, error) {
 
-	aie := &db.ActiveIncidentEntry{}
+	aie := &active.ActiveIncidentEntry{}
 	url := constants.WebCadMontcoPrint
 	r, err := scrape.Get(url)
 	if err != nil {
@@ -29,9 +29,9 @@ func PopulateActiveIncidentEntry() (*db.ActiveIncidentEntry, error) {
 }
 
 // PopulateIncident populates the Incident from a web.
-func PopulateIncident(url string) ([]db.Incident, error) {
-	incidents := []db.Incident{}
-	incident := db.Incident{}
+func PopulateIncident(url string) ([]active.Incident, error) {
+	incidents := []active.Incident{}
+	incident := active.Incident{}
 	list, err := scrape.GetMainTable(url)
 	if err != nil {
 		return incidents, err
@@ -58,7 +58,7 @@ func PopulateIncident(url string) ([]db.Incident, error) {
 
 // PopulateIncidentStatus populates the IncidentStatus from a web. Status
 // is the status of the incident, which is "Enroute", "Dispatched", "Arrived" ...
-func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
+func PopulateIncidentStatus(aie *active.ActiveIncidentEntry) error {
 
 	url := constants.WebCadMontcoPrint
 	r, err := scrape.Get(url)
@@ -75,7 +75,7 @@ func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 		if err != nil {
 			return err
 		}
-		aie.IncidentWebPages = append(aie.IncidentWebPages, db.IncidentWebPage{Page: string(r)})
+		aie.IncidentWebPages = append(aie.IncidentWebPages, active.IncidentWebPage{Page: string(r)})
 		if status, err := scrape.GetTable(r); err == nil {
 
 			for i := 0; i < len(status); i += 3 {
@@ -87,14 +87,14 @@ func PopulateIncidentStatus(aie *db.ActiveIncidentEntry) error {
 				if len(status) == i+2 {
 					aie.Incidents[index].IncidentStatus = append(
 						aie.Incidents[index].IncidentStatus,
-						db.IncidentStatus{TimeStamp: status[i],
+						active.IncidentStatus{TimeStamp: status[i],
 							Status: status[i+1]})
 					continue
 				}
 
 				aie.Incidents[index].IncidentStatus = append(
 					aie.Incidents[index].IncidentStatus,
-					db.IncidentStatus{TimeStamp: status[i],
+					active.IncidentStatus{TimeStamp: status[i],
 						Unit:   status[i+1],
 						Status: status[i+2]})
 

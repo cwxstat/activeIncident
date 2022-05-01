@@ -10,8 +10,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/cwxstat/activeIncident/active"
 	"github.com/cwxstat/activeIncident/constants"
-	"github.com/cwxstat/activeIncident/db"
 	"github.com/cwxstat/activeIncident/dbpop"
 	"github.com/cwxstat/activeIncident/metrics"
 	wdb "github.com/cwxstat/activeIncident/weather/db"
@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 				metrics.RootStartLoops()
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 				defer cancel()
-				ais, err := db.NewActiveIncidentServer(ctx)
+				ais, err := active.NewActiveIncidentServer(ctx)
 				if err != nil {
 					log.Println(err)
 					time.Sleep(constants.ErrorBackoff)
