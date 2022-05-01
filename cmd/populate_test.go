@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cwxstat/activeIncident/db"
+	"github.com/cwxstat/activeIncident/active"
 	"github.com/cwxstat/activeIncident/dbpop"
 )
 
@@ -18,7 +18,7 @@ func TestPopulate(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*30)
 	defer cancel()
-	as, err := db.NewActiveIncidentServer(ctx)
+	as, err := active.NewActiveIncidentServer(ctx)
 	if err != nil {
 		t.FailNow()
 	}

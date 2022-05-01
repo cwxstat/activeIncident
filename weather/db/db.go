@@ -9,11 +9,12 @@ import (
 
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/dbutils"
+	"github.com/cwxstat/activeIncident/dbutils/db"
 	"github.com/cwxstat/activeIncident/weather/wscrape"
 )
 
 type weatherServer struct {
-	db database
+	db db.Database
 }
 
 type WeatherEntry struct {
@@ -29,21 +30,21 @@ func NewWeather(ctx context.Context) (*weatherServer, error) {
 	}
 
 	w := &weatherServer{
-		db: &mongodb{
-			conn:       client,
-			database:   dbutils.LookupEnv("MONGO_DB", "activeIncident"),
-			collection: dbutils.LookupEnv("MONGO_WEATHER", "weather"),
+		db: &db.Mongodb{
+			Conn:       client,
+			Database:   dbutils.LookupEnv("MONGO_DB", "activeIncident"),
+			Collection: dbutils.LookupEnv("MONGO_WEATHER", "weather"),
 		},
 	}
 	return w, nil
 }
 
 func (a *weatherServer) Disconnect(ctx context.Context) error {
-	return a.db.disconnect(ctx)
+	return a.db.Disconnect(ctx)
 }
 
 func (a *weatherServer) AddEntry(ctx context.Context, entry *WeatherEntry) error {
-	return a.db.addEntry(ctx, *entry)
+	return a.db.AddEntry(ctx, *entry)
 }
 
 func PopulateWeather() (*WeatherEntry, error) {

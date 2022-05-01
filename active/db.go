@@ -1,10 +1,13 @@
-package db
+package active
 
 import (
 	"context"
+	"fmt"
+
+	"time"
 
 	"github.com/cwxstat/activeIncident/dbutils"
-	"time"
+	db2 "github.com/cwxstat/activeIncident/dbutils/db"
 )
 
 type IncidentWebPage struct {
@@ -39,7 +42,7 @@ type ActiveIncidentEntry struct {
 }
 
 type activeIncidentServer struct {
-	db database
+	db db2.Database
 }
 
 func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error) {
@@ -50,27 +53,35 @@ func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error)
 	}
 
 	a := &activeIncidentServer{
-		db: &mongodb{
-			conn:       client,
-			database:   dbutils.LookupEnv("MONGO_DB", "activeIncident"),
-			collection: dbutils.LookupEnv("MONGO_COLLECTION", "events"),
+		db: &db2.Mongodb{
+			Conn:       client,
+			Database:   dbutils.LookupEnv("MONGO_DB", "activeIncident"),
+			Collection: dbutils.LookupEnv("MONGO_COLLECTION", "events"),
 		},
 	}
 	return a, nil
 }
 
 func (a *activeIncidentServer) Disconnect(ctx context.Context) error {
-	return a.db.disconnect(ctx)
+	return a.db.Disconnect(ctx)
 }
 
 func (a *activeIncidentServer) AddEntry(ctx context.Context, entry *ActiveIncidentEntry) error {
-	return a.db.addEntry(ctx, *entry)
+	return a.db.AddEntry(ctx, *entry)
 }
 
 func (a *activeIncidentServer) EntriesMinutesAgo(ctx context.Context, min int) ([]ActiveIncidentEntry, error) {
-	return a.db.entriesMinutesAgo(ctx, min)
+	result, err := a.db.EntriesMinutesAgo(ctx, min)
+	if err != nil {
+		return nil, err
+	}
+
+	if val, ok := result.([]ActiveIncidentEntry); ok {
+		return val, nil
+	}
+	return nil, fmt.Errorf("EntriesMinutesAgo")
 }
 
 func (a *activeIncidentServer) DatabaseCollection(database string, collection string) {
-	a.db.databaseCollection(database, collection)
+	a.db.DatabaseCollection(database, collection)
 }
