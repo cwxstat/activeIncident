@@ -3,18 +3,13 @@ package db
 import (
 	"context"
 
-	"fmt"
 	"log"
 
-	"os"
 	"time"
 
 	"github.com/cwxstat/activeIncident/constants"
 	"github.com/cwxstat/activeIncident/dbutils"
 	"github.com/cwxstat/activeIncident/weather/wscrape"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type weatherServer struct {
@@ -26,32 +21,9 @@ type WeatherEntry struct {
 	TimeStamp       time.Time `json:"date" bson:"date"`
 }
 
-func conn(ctx context.Context) (*mongo.Client, error) {
-
-	mongoURI := os.Getenv("MONGO_URI")
-	if mongoURI == "" {
-		log.Println("MONGO_URI environment variable not specified")
-		return nil, fmt.Errorf("MONGO_URI environment variable not specified")
-	}
-
-	dbConn, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
-	if err != nil {
-
-		log.Printf("failed to initialize connection to mongodb: %+v", err)
-		return nil, err
-	}
-	if err := dbConn.Ping(ctx, readpref.Primary()); err != nil {
-		log.Printf("ping to mongodb failed: %+v", err)
-		return nil, err
-	}
-
-	return dbConn, nil
-
-}
-
 func NewWeather(ctx context.Context) (*weatherServer, error) {
 
-	client, err := conn(ctx)
+	client, err := dbutils.Conn(ctx)
 	if err != nil {
 		return nil, err
 	}

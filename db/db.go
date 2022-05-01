@@ -3,16 +3,8 @@ package db
 import (
 	"context"
 
-	"fmt"
-	"log"
-
-	"os"
-	"time"
-
 	"github.com/cwxstat/activeIncident/dbutils"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"time"
 )
 
 type IncidentWebPage struct {
@@ -50,36 +42,9 @@ type activeIncidentServer struct {
 	db database
 }
 
-/*
-    connCtx, cancel := context.WithTimeout(ctx, time.Second*30)
-	defer cancel()
-*/
-func conn(ctx context.Context) (*mongo.Client, error) {
-
-	mongoURI := os.Getenv("MONGO_URI")
-	if mongoURI == "" {
-		log.Println("MONGO_URI environment variable not specified")
-		return nil, fmt.Errorf("MONGO_URI environment variable not specified")
-	}
-
-	dbConn, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
-	if err != nil {
-
-		log.Printf("failed to initialize connection to mongodb: %+v", err)
-		return nil, err
-	}
-	if err := dbConn.Ping(ctx, readpref.Primary()); err != nil {
-		log.Printf("ping to mongodb failed: %+v", err)
-		return nil, err
-	}
-
-	return dbConn, nil
-
-}
-
 func NewActiveIncidentServer(ctx context.Context) (*activeIncidentServer, error) {
 
-	client, err := conn(ctx)
+	client, err := dbutils.Conn(ctx)
 	if err != nil {
 		return nil, err
 	}
