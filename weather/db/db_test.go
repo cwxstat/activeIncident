@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/cwxstat/activeIncident/constants"
 	"testing"
 )
 
@@ -24,7 +25,10 @@ func TestPopulateWeather(t *testing.T) {
 				t.Errorf("PopulateWeather() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			_ = got
+			if len(constants.MontcoZipCodes) != len(got.WeatherResponse.Weather) {
+				t.Errorf("PopulateWeather() = %v, want %v", len(got.WeatherResponse.Weather), len(constants.MontcoZipCodes))
+			}
+
 		})
 	}
 }
