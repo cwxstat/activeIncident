@@ -20,3 +20,9 @@ unloadmongo: ## docker load mongo
 test: ## Go test
 	MONGO_URI="mongodb://localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000"
 	go test ./...
+
+
+.PHONY: complete
+complete: loadmongo ## Go test complete for github actions
+	MONGO_URI="mongodb://localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000"
+	go test ./...
