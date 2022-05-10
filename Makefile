@@ -18,7 +18,7 @@ unloadmongo: ## docker load mongo
 
 .PHONY: test
 test: ## Go test
-	MONGO_URI="mongodb://localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000"
+	export MONGO_URI="mongodb://localhost:27017/?directConnection=true&serverSelectionTimeoutMS=2000"
 	go test ./...
 
 
