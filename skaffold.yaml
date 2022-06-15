@@ -1,0 +1,19 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: active-incident
+build:
+  tagPolicy:
+    dateTime:
+      format: "2006-01-02_15-04-05.999_DST"
+      timezone: "Local"
+  artifacts:
+  - image: us-central1-docker.pkg.dev/mchirico/public/activeincident
+    ko: {}
+deploy:
+  kubectl:
+    manifests:
+    - utils/k8s/pod.yaml
+     
+
+
