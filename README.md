@@ -2,3 +2,12 @@
 # activeIncident
 911 calls Montco
 
+
+### Setup
+
+```bash
+kubens active-incident
+
+skaffold run
+
+```
