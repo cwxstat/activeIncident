@@ -87,7 +87,7 @@ func RunInGoRoutine(countlimit ...int64) error {
 			if err := ais.Disconnect(ctx); err != nil {
 				log.Println("as.Disconnect: ", err)
 			}
-			log.Println("Weather data added")
+			// log.Println("Weather data added")
 			return nil
 
 		}()

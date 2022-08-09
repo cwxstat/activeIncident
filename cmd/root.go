@@ -62,7 +62,8 @@ to quickly create a Cobra application.`,
 				if err := ais.Disconnect(ctx); err != nil {
 					log.Println("as.Disconnect: ", err)
 				}
-				log.Println("entry added")
+				// Debugging
+				// log.Println("entry added")
 				metrics.RootProcessedLoops()
 
 			}()
