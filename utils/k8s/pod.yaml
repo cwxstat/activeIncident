@@ -13,6 +13,14 @@ spec:
   containers:
     - name: active-incident-container
       image: us-central1-docker.pkg.dev/mchirico/public/activeincident
+      livenessProbe:
+        httpGet:
+          path: /metrics
+          port: 2112
+          scheme: HTTP
+        initialDelaySeconds: 13
+        periodSeconds: 120
+
       env:
       - name: MONGO_URI
         valueFrom:
