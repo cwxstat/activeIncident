@@ -51,6 +51,8 @@ to quickly create a Cobra application.`,
 				a, err := dbpop.PopulateActiveIncidentEntry()
 				if err != nil {
 					log.Println(err)
+					time.Sleep(constants.ErrorBackoff)
+					return
 				}
 
 				err = ais.AddEntry(ctx, a)
