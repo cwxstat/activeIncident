@@ -28,6 +28,10 @@ var (
 	})
 )
 
+/*
+kubectl port-forward pod/active-incident 2112:2112
+http://localhost:2112/metrics
+*/
 func StartMetrics() {
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":2112", nil)
