@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: active-incident
+  name: active-incident-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: active-incident
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: active-incident
+    spec:
+      containers:
+      - image: us-central1-docker.pkg.dev/mchirico/public/activeincident
+        name: active-incident-container
+        resources: 
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: mongo-creds
+              key: mongouri
+        - name: OWM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mongo-creds
+              key: weatherkey
+        - name: MONGO_WEATHER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-creds
+              key: weathercollection
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 2112
+            scheme: HTTP
+          initialDelaySeconds: 13
+          periodSeconds: 120
+
+        volumeMounts:
+        - mountPath: /etc/mongo
+          name: active-incident-data-volume
+      volumes:
+      - name: active-incident-data-volume
+        persistentVolumeClaim:
+          claimName: active-incident-storage
+          readOnly: false
+
+        
+
