@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: active-incident
-  name: active-incident-deployment
+  name: active-incident
 spec:
   replicas: 1
   selector:
