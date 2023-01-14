@@ -30,13 +30,19 @@ func PopulateActiveIncidentEntry() (*active.ActiveIncidentEntry, error) {
 
 // PopulateIncident populates the Incident from a web.
 func PopulateIncident(url string) ([]active.Incident, error) {
-	incidents := []active.Incident{}
-	incident := active.Incident{}
+
 	list, err := scrape.GetMainTable(url)
 	if err != nil {
-		return incidents, err
+		return []active.Incident{}, err
 	}
 
+	return populateIncident(list)
+
+}
+
+func populateIncident(list []string) ([]active.Incident, error) {
+	incidents := []active.Incident{}
+	incident := active.Incident{}
 	for index := 0; index < len(list); index += 6 {
 		incident.IncidentNo = list[index]
 		incident.IncidentType = list[index+1]
@@ -44,6 +50,8 @@ func PopulateIncident(url string) ([]active.Incident, error) {
 			incident.IncidentSubTupe = list[index+2]
 			incident.Location = list[index+3]
 			incident.Municipality = list[index+4]
+			incident.DispatchTime = list[index+5]
+			incident.Station = ""
 		} else {
 			incident.Location = list[index+2]
 			incident.Municipality = list[index+3]
@@ -52,7 +60,6 @@ func PopulateIncident(url string) ([]active.Incident, error) {
 		}
 		incidents = append(incidents, incident)
 	}
-
 	return incidents, nil
 }
 
